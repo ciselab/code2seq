@@ -3,6 +3,7 @@ package JavaExtractor.Common;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.spi.ExplicitBooleanOptionHandler;
 
 import java.io.File;
 
@@ -41,11 +42,19 @@ public class CommandLineValues {
     public int MaxChildId = 3;
 
     @Option(name = "--inline_comments", required = false)
-    public boolean InlineComments = false;
+    public boolean IncludeComments = false;
+
+    @Option(name = "--exclude_stopwords", required = false, handler = ExplicitBooleanOptionHandler.class)
+    public boolean ExcludeStopwords =  false;
     
     @Option(name = "--generate_ast", required = false)
     public boolean GenerateAST = false;
 
+    @Option(name = "--include_tfidf", required = false, handler = ExplicitBooleanOptionHandler.class)
+    public boolean IncludeTFIDF =  false;
+
+    @Option(name = "--number_keywords", required = false)
+    public int NumberKeywords = 4;
 
     public CommandLineValues(String... args) throws CmdLineException {
         CmdLineParser parser = new CmdLineParser(this);
