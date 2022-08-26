@@ -1,7 +1,7 @@
 package JavaExtractor.Visitors;
 
-import JavaExtractor.Common.Common;
 import JavaExtractor.Common.CommandLineValues;
+import JavaExtractor.Common.Common;
 import JavaExtractor.Common.StopWordsFilter;
 import JavaExtractor.Common.TFIDF;
 import JavaExtractor.FeaturesEntities.Property;
@@ -11,7 +11,6 @@ import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.visitor.TreeVisitor;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,45 +20,14 @@ public class LeavesCollectorVisitor extends TreeVisitor {
   private List<String> collection;
 
   public LeavesCollectorVisitor(CommandLineValues commandLineValues, List<String> collection) {
+    super();
     this.m_CommandLineValues = commandLineValues;
     this.collection = collection;
   }
 
-  // @Override
-  // public void process(Node node) {
-
-  //   if (m_CommandLineValues.InlineComments) {
-  //     // If node has comment add it to leaves.
-  //     // Check if it is not javadoc or contains code.
-  //     Optional<Comment> com = node.getComment();
-  //     if (com.isPresent() && !(com.get() instanceof JavadocComment) && !containsCode(com.get().getContent())) {
-  //       // TODO: Check if filtering works properly
-  //       String updatedComment = StopWordsFilter.removeStopWords(com.get().getContent());
-  //       m_Leaves.add(node.setComment(com.get().setContent(updatedComment)));
-  //     }
-  //   }
-
-  //   if (node instanceof Comment) {
-  //     return;
-  //   }
-
-  //   boolean isLeaf = false;
-  //   boolean isGenericParent = isGenericParent(node);
-  //   if (hasNoChildren(node) && isNotComment(node)) {
-  //     if (!node.toString().isEmpty() && (!"null".equals(node.toString()) || (node instanceof NullLiteralExpr))) {
-  //       m_Leaves.add(node);
-  //       isLeaf = true;
-  //     }
-  //   }
-
-  //   int childId = getChildId(node);
-  //   node.setData(Common.ChildId, childId);
-  //   Property property = new Property(node, isLeaf, isGenericParent);
-  //   node.setData(Common.PropertyKey, property);
-  // }
-
   @Override
   public void process(Node node) {
+
     // TODO: Understand this statement
     if (node instanceof Comment) {
       return;
@@ -109,7 +77,8 @@ public class LeavesCollectorVisitor extends TreeVisitor {
     boolean isLeaf = false;
     boolean isGenericParent = isGenericParent(node);
     if (hasNoChildren(node) && isNotComment(node)) {
-      if (!node.toString().isEmpty() && (!"null".equals(node.toString()) || (node instanceof NullLiteralExpr))) {
+      if (!node.toString().isEmpty()
+          && (!"null".equals(node.toString()) || (node instanceof NullLiteralExpr))) {
         m_Leaves.add(node);
         isLeaf = true;
       }
@@ -133,7 +102,6 @@ public class LeavesCollectorVisitor extends TreeVisitor {
 
   private boolean hasNoChildren(Node node) {
     return node.getChildNodes().size() == 0;
-
   }
 
   private boolean isNotComment(Node node) {

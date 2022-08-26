@@ -7,36 +7,36 @@ import java.util.List;
 
 public class StopWordsFilter {
 
-    public static List<String> stopwords;
-    
-    /**
-     *  Get list of stopwords from dataset
-     */
-    public static void setup(){
-        try {
-            stopwords = Files.readAllLines(Paths.get("JavaExtractor/JPredict/src/main/java/JavaExtractor/Common/stop_words.txt"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+  public static List<String> stopwords;
 
-    /**
-     * Remove stopwords from a string
-     * @param input - string to modify
-     * @return input without stopwords
-     */
-    public static String removeStopWords(String input){
-
-        setup();
-        
-        String[] allWords = input.split(" ");
-        StringBuilder builder = new StringBuilder();
-        for(String word: allWords) {
-            if(! stopwords.contains(word)) {
-                builder.append(word);
-                builder.append(" ");
-            }
-        }
-        return builder.toString().trim();
+  /** Get list of stopwords from dataset */
+  public static void setup() {
+    try {
+      stopwords =
+          Files.readAllLines(Paths.get("src/main/java/JavaExtractor/Common/stop_words.txt"));
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+  }
+
+  /**
+   * Remove stopwords from a string
+   *
+   * @param input - string to modify
+   * @return input without stopwords
+   */
+  public static String removeStopWords(String input) {
+
+    setup();
+
+    String[] allWords = input.split(" ");
+    StringBuilder builder = new StringBuilder();
+    for (String word : allWords) {
+      if (!stopwords.contains(word)) {
+        builder.append(word);
+        builder.append(" ");
+      }
+    }
+    return builder.toString().trim();
+  }
 }
