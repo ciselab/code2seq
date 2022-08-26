@@ -68,7 +68,7 @@ public class FunctionVisitor extends VoidVisitorAdapter<Object> {
       leavesCollectorVisitor = new LeavesCollectorVisitor(m_CommandLineValues, new ArrayList<>());
     }
 
-    leavesCollectorVisitor.visitDepthFirst(node);
+    leavesCollectorVisitor.visitBreadthFirst(node);
     ArrayList<Node> leaves = leavesCollectorVisitor.getLeaves();
     Optional<JavadocComment> javadocCommentOptional = node.getJavadocComment();
     String comment = "";

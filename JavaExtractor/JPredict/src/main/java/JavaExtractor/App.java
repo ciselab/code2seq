@@ -2,18 +2,17 @@ package JavaExtractor;
 
 import JavaExtractor.Common.CommandLineValues;
 import JavaExtractor.Common.Common;
-import org.kohsuke.args4j.CmdLineException;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
+import org.kohsuke.args4j.CmdLineException;
 
 public class App {
   private static CommandLineValues s_CommandLineValues;
@@ -43,26 +42,30 @@ public class App {
   }
 
   private static void extractDir() {
-    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(s_CommandLineValues.NumThreads);
+    ThreadPoolExecutor executor =
+        (ThreadPoolExecutor) Executors.newFixedThreadPool(s_CommandLineValues.NumThreads);
     LinkedList<ExtractFeaturesTask> tasks = new LinkedList<>();
     try {
-      Files.walk(Paths.get(s_CommandLineValues.Dir)).filter(Files::isRegularFile)
-          .filter(p -> p.toString().toLowerCase().endsWith(".jsonl")).forEach(f -> {
-            List<String> code;
-            // create file from path (see extractSingleFile on how)
-            try {
-              code = Files.readAllLines(f);
-            } catch (IOException e) {
-              e.printStackTrace();
-              code = new ArrayList<>();
-            }
-            // For each line in file create a new tasks
-            code.forEach(l -> {
-              ExtractFeaturesTask task = new ExtractFeaturesTask(s_CommandLineValues, l);
-              tasks.add(task);
-            });
-
-          });
+      Files.walk(Paths.get(s_CommandLineValues.Dir))
+          .filter(Files::isRegularFile)
+          .filter(p -> p.toString().toLowerCase().endsWith(".jsonl"))
+          .forEach(
+              f -> {
+                List<String> code;
+                // create file from path (see extractSingleFile on how)
+                try {
+                  code = Files.readAllLines(f);
+                } catch (IOException e) {
+                  e.printStackTrace();
+                  code = new ArrayList<>();
+                }
+                // For each line in file create a new tasks
+                code.forEach(
+                    l -> {
+                      ExtractFeaturesTask task = new ExtractFeaturesTask(s_CommandLineValues, l);
+                      tasks.add(task);
+                    });
+              });
     } catch (IOException e) {
       e.printStackTrace();
       return;
@@ -75,12 +78,13 @@ public class App {
     } finally {
       executor.shutdown();
     }
-    tasksResults.forEach(f -> {
-      try {
-        f.get();
-      } catch (InterruptedException | ExecutionException e) {
-        // e.printStackTrace();
-      }
-    });
+    tasksResults.forEach(
+        f -> {
+          try {
+            f.get();
+          } catch (InterruptedException | ExecutionException e) {
+            // e.printStackTrace();
+          }
+        });
   }
 }

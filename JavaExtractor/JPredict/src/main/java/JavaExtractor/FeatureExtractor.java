@@ -11,24 +11,22 @@ import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.printer.DotPrinter;
-import com.github.javaparser.ast.comments.LineComment;
-
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.io.PrintWriter;
-import java.io.FileWriter;
 
 @SuppressWarnings("StringEquality")
 class FeatureExtractor {
-  private final static String upSymbol = "|";
-  private final static String downSymbol = "|";
-  private static final Set<String> s_ParentTypeToAddChildId = Stream
-      .of("AssignExpr", "ArrayAccessExpr", "FieldAccessExpr", "MethodCallExpr")
-      .collect(Collectors.toCollection(HashSet::new));
+  private static final String upSymbol = "|";
+  private static final String downSymbol = "|";
+  private static final Set<String> s_ParentTypeToAddChildId =
+      Stream.of("AssignExpr", "ArrayAccessExpr", "FieldAccessExpr", "MethodCallExpr")
+          .collect(Collectors.toCollection(HashSet::new));
   private final CommandLineValues m_CommandLineValues;
 
   public FeatureExtractor(CommandLineValues commandLineValues) {
@@ -45,7 +43,6 @@ class FeatureExtractor {
       } catch (Exception e) {
         break;
       }
-
     }
     return upStack;
   }
@@ -92,9 +89,10 @@ class FeatureExtractor {
       } catch (ParseProblemException e2) {
         // Wrap with a class only
         // try {
-          content = classPrefix + code + classSuffix;
-          parsed = JavaParser.parse(content);
-        // } catch (ParseProblemException e3) { // Idea for future: dont catch anything to let it fail and add nothing! 
+        content = classPrefix + code + classSuffix;
+        parsed = JavaParser.parse(content);
+        // } catch (ParseProblemException e3) { // Idea for future: dont catch anything to let it
+        // fail and add nothing!
         //   content = "";
         //   parsed = JavaParser.parse(content);
         // }
@@ -142,8 +140,10 @@ class FeatureExtractor {
     int commonPrefix = 0;
     int currentSourceAncestorIndex = sourceStack.size() - 1;
     int currentTargetAncestorIndex = targetStack.size() - 1;
-    while (currentSourceAncestorIndex >= 0 && currentTargetAncestorIndex >= 0
-        && sourceStack.get(currentSourceAncestorIndex) == targetStack.get(currentTargetAncestorIndex)) {
+    while (currentSourceAncestorIndex >= 0
+        && currentTargetAncestorIndex >= 0
+        && sourceStack.get(currentSourceAncestorIndex)
+            == targetStack.get(currentTargetAncestorIndex)) {
       commonPrefix++;
       currentSourceAncestorIndex--;
       currentTargetAncestorIndex--;
@@ -155,8 +155,9 @@ class FeatureExtractor {
     }
 
     if (currentSourceAncestorIndex >= 0 && currentTargetAncestorIndex >= 0) {
-      int pathWidth = targetStack.get(currentTargetAncestorIndex).getData(Common.ChildId)
-          - sourceStack.get(currentSourceAncestorIndex).getData(Common.ChildId);
+      int pathWidth =
+          targetStack.get(currentTargetAncestorIndex).getData(Common.ChildId)
+              - sourceStack.get(currentSourceAncestorIndex).getData(Common.ChildId);
       if (pathWidth > m_CommandLineValues.MaxPathWidth) {
         return Common.EmptyString;
       }
@@ -165,13 +166,14 @@ class FeatureExtractor {
     for (int i = 0; i < sourceStack.size() - commonPrefix; i++) {
       Node currentNode = sourceStack.get(i);
       String childId = Common.EmptyString;
-      String parentRawType = currentNode.getParentNode().get().getData(Common.PropertyKey).getRawType();
+      String parentRawType =
+          currentNode.getParentNode().get().getData(Common.PropertyKey).getRawType();
       if (i == 0 || s_ParentTypeToAddChildId.contains(parentRawType)) {
-        childId = saturateChildId(currentNode.getData(Common.ChildId))
-            .toString();
+        childId = saturateChildId(currentNode.getData(Common.ChildId)).toString();
       }
-      stringBuilder.add(String.format("%s%s%s",
-          currentNode.getData(Common.PropertyKey).getType(true), childId, upSymbol));
+      stringBuilder.add(
+          String.format(
+              "%s%s%s", currentNode.getData(Common.PropertyKey).getType(true), childId, upSymbol));
     }
 
     Node commonNode = sourceStack.get(sourceStack.size() - commonPrefix);
@@ -182,21 +184,24 @@ class FeatureExtractor {
       commonNodeParentRawType = parentNodeProperty.getRawType();
     }
     if (s_ParentTypeToAddChildId.contains(commonNodeParentRawType)) {
-      commonNodeChildId = saturateChildId(commonNode.getData(Common.ChildId))
-          .toString();
+      commonNodeChildId = saturateChildId(commonNode.getData(Common.ChildId)).toString();
     }
-    stringBuilder.add(String.format("%s%s",
-        commonNode.getData(Common.PropertyKey).getType(true), commonNodeChildId));
+    stringBuilder.add(
+        String.format(
+            "%s%s", commonNode.getData(Common.PropertyKey).getType(true), commonNodeChildId));
 
     for (int i = targetStack.size() - commonPrefix - 1; i >= 0; i--) {
       Node currentNode = targetStack.get(i);
       String childId = Common.EmptyString;
-      if (i == 0 || s_ParentTypeToAddChildId.contains(currentNode.getData(Common.PropertyKey).getRawType())) {
-        childId = saturateChildId(currentNode.getData(Common.ChildId))
-            .toString();
+      if (i == 0
+          || s_ParentTypeToAddChildId.contains(
+              currentNode.getData(Common.PropertyKey).getRawType())) {
+        childId = saturateChildId(currentNode.getData(Common.ChildId)).toString();
       }
-      stringBuilder.add(String.format("%s%s%s", downSymbol,
-          currentNode.getData(Common.PropertyKey).getType(true), childId));
+      stringBuilder.add(
+          String.format(
+              "%s%s%s",
+              downSymbol, currentNode.getData(Common.PropertyKey).getType(true), childId));
     }
 
     return stringBuilder.toString();

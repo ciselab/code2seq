@@ -2,6 +2,7 @@ package JavaExtractor.Visitors;
 
 import JavaExtractor.Common.CommandLineValues;
 import JavaExtractor.Common.Common;
+import JavaExtractor.Common.RegexFilter;
 import JavaExtractor.Common.StopWordsFilter;
 import JavaExtractor.Common.TFIDF;
 import JavaExtractor.FeaturesEntities.Property;
@@ -40,9 +41,12 @@ public class LeavesCollectorVisitor extends TreeVisitor {
       // node.getAllContainedComments()
       List<Comment> comments = new ArrayList<>();
 
-      // check if current node has associated comment
+      // check if current node has associated comment and
+      // if that comment is not a piece of commented code
       if (node.getComment().isPresent()) {
-        comments.add(node.getComment().get());
+        Comment comment = node.getComment().get();
+        if (RegexFilter.containsCode(comment.getContent())) return;
+        else comments.add(comment);
       }
 
       // loop through comments
@@ -88,10 +92,6 @@ public class LeavesCollectorVisitor extends TreeVisitor {
     node.setData(Common.ChildId, childId);
     Property property = new Property(node, isLeaf, isGenericParent);
     node.setData(Common.PropertyKey, property);
-  }
-
-  private boolean containsCode(String comment) {
-    return ("//" + comment).matches("^\\s*.*;\\s*$");
   }
 
   private boolean isGenericParent(Node node) {
