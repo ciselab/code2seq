@@ -6,6 +6,11 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.spi.ExplicitBooleanOptionHandler;
 
+enum Dataset {
+  DEFAULT,
+  CODESEARCHNET
+};
+
 /** This class handles the programs arguments. */
 public class CommandLineValues {
   @Option(name = "--file", required = false)
@@ -58,6 +63,9 @@ public class CommandLineValues {
 
   @Option(name = "--number_keywords", required = false)
   public int NumberKeywords = 4;
+
+  @Option(name = "--dataset", required = false)
+  public Dataset ds = Dataset.DEFAULT;
 
   public CommandLineValues(String... args) throws CmdLineException {
     CmdLineParser parser = new CmdLineParser(this);
