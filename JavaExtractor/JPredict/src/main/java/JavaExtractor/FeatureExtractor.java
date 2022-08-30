@@ -15,10 +15,12 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
 
 @SuppressWarnings("StringEquality")
 class FeatureExtractor {
@@ -88,14 +90,8 @@ class FeatureExtractor {
         parsed = JavaParser.parse(content);
       } catch (ParseProblemException e2) {
         // Wrap with a class only
-        // try {
         content = classPrefix + code + classSuffix;
         parsed = JavaParser.parse(content);
-        // } catch (ParseProblemException e3) { // Idea for future: dont catch anything to let it
-        // fail and add nothing!
-        //   content = "";
-        //   parsed = JavaParser.parse(content);
-        // }
       }
     }
     return parsed;
@@ -209,5 +205,26 @@ class FeatureExtractor {
 
   private Integer saturateChildId(int childId) {
     return Math.min(childId, m_CommandLineValues.MaxChildId);
+  }
+
+  public String featuresToString(ArrayList<ProgramFeatures> features) {
+    if (features == null || features.isEmpty()) {
+      return Common.EmptyString;
+    }
+
+    List<String> methodsOutputs = new ArrayList<>();
+
+    for (ProgramFeatures singleMethodFeatures : features) {
+      StringBuilder builder = new StringBuilder();
+
+      String toPrint = singleMethodFeatures.toString();
+      if (m_CommandLineValues.PrettyPrint) {
+        toPrint = toPrint.replace(" ", "\n\t");
+      }
+      builder.append(toPrint);
+
+      methodsOutputs.add(builder.toString());
+    }
+    return StringUtils.join(methodsOutputs, "\n");
   }
 }

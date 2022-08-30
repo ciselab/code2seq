@@ -12,8 +12,7 @@ public class StopWordsFilter {
   /** Get list of stopwords from dataset */
   public static void setup() {
     try {
-      stopwords =
-          Files.readAllLines(Paths.get("src/main/java/JavaExtractor/Common/stop_words.txt"));
+      stopwords = Files.readAllLines(Paths.get("src/main/resources/stop_words.txt"));
     } catch (IOException e) {
       e.printStackTrace();
     }
