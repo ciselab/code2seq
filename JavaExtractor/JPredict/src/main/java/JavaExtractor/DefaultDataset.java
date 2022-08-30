@@ -48,4 +48,10 @@ public class DefaultDataset implements Dataset {
           }
         });
   }
+
+  @Override
+  public void extractFile(CommandLineValues s_CommandLineValues, String filePath) {
+    DefaultTaskExtractor ex = new DefaultTaskExtractor(s_CommandLineValues, Paths.get(filePath));
+    ex.processFile();
+  }
 }

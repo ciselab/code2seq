@@ -50,7 +50,11 @@ public class CommandLineValues {
       handler = ExplicitBooleanOptionHandler.class)
   public boolean ExcludeStopwords = false;
 
-  @Option(name = "--generate_ast", required = false, handler = ExplicitBooleanOptionHandler.class)
+  @Option(
+      name = "--generate_ast",
+      required = false,
+      forbids = "--dir",
+      handler = ExplicitBooleanOptionHandler.class)
   public boolean GenerateAST = false;
 
   @Option(name = "--include_tfidf", required = false, handler = ExplicitBooleanOptionHandler.class)

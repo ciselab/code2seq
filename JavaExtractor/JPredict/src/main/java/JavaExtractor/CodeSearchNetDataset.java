@@ -62,4 +62,11 @@ public class CodeSearchNetDataset implements Dataset {
           }
         });
   }
+
+  @Override
+  public void extractFile(CommandLineValues s_CommandLineValues, String filePath) {
+    // TEST TO SEE IF IT EXPECTS CODE OR FILEPATH
+    CodeSearchNetTaskExtractor ex = new CodeSearchNetTaskExtractor(s_CommandLineValues, filePath);
+    ex.processLines();
+  }
 }

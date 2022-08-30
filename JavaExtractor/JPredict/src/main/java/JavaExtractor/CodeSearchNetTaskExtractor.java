@@ -10,7 +10,7 @@ import org.json.JSONObject;
 class CodeSearchNetTaskExtractor implements Callable<Void> {
   private final CommandLineValues m_CommandLineValues;
   private final String fileLine;
-  private FeatureExtractor featureExtractor;
+  FeatureExtractor featureExtractor;
 
   public CodeSearchNetTaskExtractor(CommandLineValues commandLineValues, String fileLine) {
     m_CommandLineValues = commandLineValues;

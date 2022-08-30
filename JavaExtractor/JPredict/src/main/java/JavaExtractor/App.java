@@ -17,24 +17,26 @@ public class App {
       return;
     }
 
+    Dataset dataset;
+    switch (s_CommandLineValues.ds) {
+      case CODESEARCHNET:
+        dataset = new CodeSearchNetDataset();
+        // case FUNCOM:
+      default:
+        dataset = new DefaultDataset();
+    }
+
     if (s_CommandLineValues.File != null) {
-      String code;
+      String filePath;
       try {
-        code = new String(Files.readAllBytes(s_CommandLineValues.File.toPath()));
+        filePath = new String(Files.readAllBytes(s_CommandLineValues.File.toPath()));
       } catch (IOException e) {
         e.printStackTrace();
-        code = Common.EmptyString;
+        filePath = Common.EmptyString;
       }
-
-      ExtractFeaturesTask extractFeaturesTask = new ExtractFeaturesTask(s_CommandLineValues, code);
-      extractFeaturesTask.processFile();
+      dataset.extractFile(s_CommandLineValues, filePath);
     } else if (s_CommandLineValues.Dir != null) {
-      switch (s_CommandLineValues.ds) {
-        case CODESEARCHNET:
-          new CodeSearchNetDataset().extractDir(s_CommandLineValues);
-        default:
-          new DefaultDataset().extractDir(s_CommandLineValues);
-      }
+      dataset.extractDir(s_CommandLineValues);
     }
   }
 }
