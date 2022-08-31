@@ -44,6 +44,8 @@ def ExtractFeaturesForDir(args, dir, prefix):
     ]
     if args.inline_comments == "true":
         command.append("--inline_comments")
+    if args.dataset != "default":
+        command.apend("--dataset " + str(args.dataset))
 
     # print command
     # os.system(command)
@@ -121,6 +123,7 @@ if __name__ == "__main__":
         required=False,
         default=False,
     )
+    parser.add_argument("-d", "--dataset", dest="dataset", required=False, default="default")
     args = parser.parse_args()
 
     if args.file is not None:

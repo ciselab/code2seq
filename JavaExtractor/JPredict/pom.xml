@@ -31,7 +31,8 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <excludes>
-                        <exclude>Test.java</exclude>
+                        <exclude>TestCSN.java</exclude>
+                        <exclude>TestDefault.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>

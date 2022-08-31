@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
+import org.json.JSONObject;
 
 public class CodeSearchNetDataset implements Dataset {
 
@@ -18,7 +19,7 @@ public class CodeSearchNetDataset implements Dataset {
   public void extractDir(CommandLineValues s_CommandLineValues) {
     ThreadPoolExecutor executor =
         (ThreadPoolExecutor) Executors.newFixedThreadPool(s_CommandLineValues.NumThreads);
-    LinkedList<CodeSearchNetTaskExtractor> tasks = new LinkedList<>();
+    LinkedList<ExtractFeaturesTask> tasks = new LinkedList<>();
     try {
       Files.walk(Paths.get(s_CommandLineValues.Dir))
           .filter(Files::isRegularFile)
@@ -36,8 +37,8 @@ public class CodeSearchNetDataset implements Dataset {
                 // For each line in file create a new task
                 code.forEach(
                     l -> {
-                      CodeSearchNetTaskExtractor task =
-                          new CodeSearchNetTaskExtractor(s_CommandLineValues, l);
+                      ExtractFeaturesTask task =
+                          new ExtractFeaturesTask(s_CommandLineValues, collectJson(l));
                       tasks.add(task);
                     });
               });
@@ -64,9 +65,37 @@ public class CodeSearchNetDataset implements Dataset {
   }
 
   @Override
-  public void extractFile(CommandLineValues s_CommandLineValues, String filePath) {
-    // TEST TO SEE IF IT EXPECTS CODE OR FILEPATH
-    CodeSearchNetTaskExtractor ex = new CodeSearchNetTaskExtractor(s_CommandLineValues, filePath);
-    ex.processLines();
+  public void extractFile(CommandLineValues s_CommandLineValues, String code) {
+    ExtractFeaturesTask ex = new ExtractFeaturesTask(s_CommandLineValues, collectJson(code));
+    ex.process();
+  }
+
+  private String collectJson(String json) {
+    JSONObject jo = new JSONObject(json);
+
+    StringBuilder full_entry = new StringBuilder();
+    StringBuilder javaDoc = new StringBuilder().append("/**");
+    String doc = (String) jo.get("docstring");
+
+    String summary =
+        doc.lines()
+            .filter(
+                l ->
+                    !l.contains("=")
+                        && !l.contains("-")
+                        && !l.startsWith("<")
+                        && !l.startsWith("(")
+                        && !l.startsWith("@")
+                        && l.split("[\\s+]").length >= 2)
+            .findFirst()
+            .orElseThrow();
+
+    javaDoc.append(summary + "\n");
+    javaDoc.append("*/\n");
+
+    full_entry.append(javaDoc);
+    full_entry.append(jo.get("original_string") + "\n");
+
+    return full_entry.toString();
   }
 }

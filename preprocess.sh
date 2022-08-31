@@ -21,10 +21,17 @@
 #   recommended to use a multi-core machine for the preprocessing 
 #   step and set this value to the number of cores.
 # PYTHON - python3 interpreter alias.
-TRAIN_DIR=my_training_dir
-VAL_DIR=my_val_dir
-TEST_DIR=my_test_dir
-DATASET_NAME=my_dataset
+
+# DATASET_NAME=codesearchnet
+# TRAIN_DIR="data/${DATASET_NAME}/final/jsonl/train/"
+# VAL_DIR="data/${DATASET_NAME}/final/jsonl/valid/"
+# TEST_DIR="data/${DATASET_NAME}/final/jsonl/test/"
+
+DATASET_NAME=default
+TRAIN_DIR="../../data/${DATASET_NAME}/training"
+VAL_DIR="../../data/${DATASET_NAME}/validation"
+TEST_DIR="../../data/${DATASET_NAME}/test"
+
 MAX_DATA_CONTEXTS=1000
 MAX_CONTEXTS=200
 SUBTOKEN_VOCAB_SIZE=186277
@@ -38,7 +45,7 @@ VAL_DATA_FILE=${DATASET_NAME}.val.raw.txt
 TEST_DATA_FILE=${DATASET_NAME}.test.raw.txt
 EXTRACTOR_JAR=JavaExtractor/JPredict/target/JavaExtractor-0.0.1-SNAPSHOT.jar
 
-mkdir -p data
+mkdir -p data 
 mkdir -p data/${DATASET_NAME}
 
 echo "Extracting paths from validation set..."

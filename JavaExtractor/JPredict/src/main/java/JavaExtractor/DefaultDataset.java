@@ -1,6 +1,7 @@
 package JavaExtractor;
 
 import JavaExtractor.Common.CommandLineValues;
+import JavaExtractor.Common.Common;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,14 +18,22 @@ public class DefaultDataset implements Dataset {
   public void extractDir(CommandLineValues s_CommandLineValues) {
     ThreadPoolExecutor executor =
         (ThreadPoolExecutor) Executors.newFixedThreadPool(s_CommandLineValues.NumThreads);
-    LinkedList<DefaultTaskExtractor> tasks = new LinkedList<>();
+    LinkedList<ExtractFeaturesTask> tasks = new LinkedList<>();
     try {
       Files.walk(Paths.get(s_CommandLineValues.Dir))
           .filter(Files::isRegularFile)
           .filter(p -> p.toString().toLowerCase().endsWith(".java"))
           .forEach(
               f -> {
-                DefaultTaskExtractor task = new DefaultTaskExtractor(s_CommandLineValues, f);
+                String fileContent;
+                try {
+                  fileContent = Files.readString(f);
+                } catch (IOException e) {
+                  e.printStackTrace();
+                  fileContent = Common.EmptyString;
+                }
+                ExtractFeaturesTask task =
+                    new ExtractFeaturesTask(s_CommandLineValues, fileContent);
                 tasks.add(task);
               });
     } catch (IOException e) {
@@ -50,8 +59,8 @@ public class DefaultDataset implements Dataset {
   }
 
   @Override
-  public void extractFile(CommandLineValues s_CommandLineValues, String filePath) {
-    DefaultTaskExtractor ex = new DefaultTaskExtractor(s_CommandLineValues, Paths.get(filePath));
-    ex.processFile();
+  public void extractFile(CommandLineValues s_CommandLineValues, String fileContent) {
+    ExtractFeaturesTask ex = new ExtractFeaturesTask(s_CommandLineValues, fileContent);
+    ex.process();
   }
 }

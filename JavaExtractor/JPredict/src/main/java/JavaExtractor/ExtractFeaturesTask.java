@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
-class DefaultTaskExtractor implements Callable<Void> {
+class ExtractFeaturesTask implements Callable<Void> {
   private final CommandLineValues m_CommandLineValues;
   private final String fileContents;
   private FeatureExtractor featureExtractor;
 
-  public DefaultTaskExtractor(CommandLineValues commandLineValues, String fileContents) {
+  public ExtractFeaturesTask(CommandLineValues commandLineValues, String fileContents) {
     m_CommandLineValues = commandLineValues;
     this.fileContents = fileContents;
     featureExtractor = new FeatureExtractor(m_CommandLineValues);
@@ -19,11 +19,11 @@ class DefaultTaskExtractor implements Callable<Void> {
 
   @Override
   public Void call() {
-    processFile();
+    process();
     return null;
   }
 
-  public void processFile() {
+  public void process() {
     ArrayList<ProgramFeatures> features;
     try {
       features = extractSingleFile();

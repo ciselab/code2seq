@@ -21,20 +21,21 @@ public class App {
     switch (s_CommandLineValues.ds) {
       case CODESEARCHNET:
         dataset = new CodeSearchNetDataset();
-        // case FUNCOM:
+        break;
       default:
         dataset = new DefaultDataset();
     }
 
     if (s_CommandLineValues.File != null) {
-      String filePath;
+      String code;
       try {
-        filePath = new String(Files.readAllBytes(s_CommandLineValues.File.toPath()));
+        code = new String(Files.readAllBytes(s_CommandLineValues.File.toPath()));
+        System.out.println(code);
       } catch (IOException e) {
         e.printStackTrace();
-        filePath = Common.EmptyString;
+        code = Common.EmptyString;
       }
-      dataset.extractFile(s_CommandLineValues, filePath);
+      dataset.extractFile(s_CommandLineValues, code);
     } else if (s_CommandLineValues.Dir != null) {
       dataset.extractDir(s_CommandLineValues);
     }
