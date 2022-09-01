@@ -13,6 +13,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import org.json.JSONObject;
 
+/**
+ * This class covers the data-format for the Code Search Net dataset. More information on said
+ * dataset: https://github.com/github/CodeSearchNet
+ */
 public class CodeSearchNetDataset implements Dataset {
 
   /**
