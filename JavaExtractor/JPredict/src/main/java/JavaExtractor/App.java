@@ -9,13 +9,8 @@ import org.kohsuke.args4j.CmdLineException;
 public class App {
   private static CommandLineValues s_CommandLineValues;
 
-  public static void main(String[] args) {
-    try {
-      s_CommandLineValues = new CommandLineValues(args);
-    } catch (CmdLineException e) {
-      e.printStackTrace();
-      return;
-    }
+  public static void main(String[] args) throws CmdLineException {
+    s_CommandLineValues = new CommandLineValues(args);
 
     Dataset dataset;
     switch (s_CommandLineValues.ds) {
