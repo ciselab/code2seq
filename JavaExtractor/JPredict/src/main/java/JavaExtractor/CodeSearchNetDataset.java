@@ -15,6 +15,11 @@ import org.json.JSONObject;
 
 public class CodeSearchNetDataset implements Dataset {
 
+  /**
+   * Extracts the jsonl files from the given directory. Altered to suite the CodeSearchNet dataset.
+   *
+   * @param s_CommandLineValues comman line arguments.
+   */
   @Override
   public void extractDir(CommandLineValues s_CommandLineValues) {
     ThreadPoolExecutor executor =
@@ -38,7 +43,7 @@ public class CodeSearchNetDataset implements Dataset {
                 code.forEach(
                     l -> {
                       ExtractFeaturesTask task =
-                          new ExtractFeaturesTask(s_CommandLineValues, collectJson(l));
+                          new ExtractFeaturesTask(s_CommandLineValues, parseJson(l));
                       tasks.add(task);
                     });
               });
@@ -64,17 +69,28 @@ public class CodeSearchNetDataset implements Dataset {
         });
   }
 
+  /**
+   * Extracts the code from the given file.
+   *
+   * @param s_CommandLineValues comman line arguments.
+   * @param fileConent contents of the given file.
+   */
   @Override
-  public void extractFile(CommandLineValues s_CommandLineValues, String code) {
-    ExtractFeaturesTask ex = new ExtractFeaturesTask(s_CommandLineValues, collectJson(code));
+  public void extractFile(CommandLineValues s_CommandLineValues, String fileContent) {
+    ExtractFeaturesTask ex = new ExtractFeaturesTask(s_CommandLineValues, parseJson(fileContent));
     ex.process();
   }
 
-  private String collectJson(String json) {
+  /**
+   * Parses the given json to extract the JavaDoc comment and code pair.
+   *
+   * @param json json string read from a file.
+   */
+  private String parseJson(String json) {
     JSONObject jo = new JSONObject(json);
 
-    StringBuilder full_entry = new StringBuilder();
-    StringBuilder javaDoc = new StringBuilder().append("/**");
+    StringBuilder fullEntry = new StringBuilder();
+    StringBuilder javaDoc = new StringBuilder().append("/**\n");
     String doc = (String) jo.get("docstring");
 
     String summary =
@@ -88,14 +104,14 @@ public class CodeSearchNetDataset implements Dataset {
                         && !l.startsWith("@")
                         && l.split("[\\s+]").length >= 2)
             .findFirst()
-            .orElseThrow();
+            .orElse("");
 
-    javaDoc.append(summary + "\n");
+    javaDoc.append("* " + summary + "\n");
     javaDoc.append("*/\n");
 
-    full_entry.append(javaDoc);
-    full_entry.append(jo.get("original_string") + "\n");
+    fullEntry.append(javaDoc);
+    fullEntry.append(jo.get("original_string") + "\n");
 
-    return full_entry.toString();
+    return fullEntry.toString();
   }
 }

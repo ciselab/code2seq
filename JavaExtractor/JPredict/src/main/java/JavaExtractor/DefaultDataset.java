@@ -14,6 +14,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class DefaultDataset implements Dataset {
 
+  /**
+   * Extracts the java files from the given directory. Altered to suite the default dataset of this
+   * project.
+   *
+   * @param s_CommandLineValues comman line arguments.
+   */
   @Override
   public void extractDir(CommandLineValues s_CommandLineValues) {
     ThreadPoolExecutor executor =
@@ -58,6 +64,12 @@ public class DefaultDataset implements Dataset {
         });
   }
 
+  /**
+   * Extracts the code from the given file.
+   *
+   * @param s_CommandLineValues comman line arguments.
+   * @param fileContent contents of the given file.
+   */
   @Override
   public void extractFile(CommandLineValues s_CommandLineValues, String fileContent) {
     ExtractFeaturesTask ex = new ExtractFeaturesTask(s_CommandLineValues, fileContent);

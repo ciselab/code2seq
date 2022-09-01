@@ -8,12 +8,12 @@ import java.util.concurrent.Callable;
 
 class ExtractFeaturesTask implements Callable<Void> {
   private final CommandLineValues m_CommandLineValues;
-  private final String fileContents;
+  private final String code;
   private FeatureExtractor featureExtractor;
 
-  public ExtractFeaturesTask(CommandLineValues commandLineValues, String fileContents) {
+  public ExtractFeaturesTask(CommandLineValues commandLineValues, String code) {
     m_CommandLineValues = commandLineValues;
-    this.fileContents = fileContents;
+    this.code = code;
     featureExtractor = new FeatureExtractor(m_CommandLineValues);
   }
 
@@ -43,10 +43,10 @@ class ExtractFeaturesTask implements Callable<Void> {
 
   private ArrayList<ProgramFeatures> extractSingleFile() throws IOException {
     if (m_CommandLineValues.MaxFileLength > 0
-        && fileContents.lines().count() > m_CommandLineValues.MaxFileLength) {
+        && code.lines().count() > m_CommandLineValues.MaxFileLength) {
       return new ArrayList<>();
     }
 
-    return featureExtractor.extractFeatures(fileContents);
+    return featureExtractor.extractFeatures(code);
   }
 }

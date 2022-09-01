@@ -29,8 +29,10 @@ public class App {
     if (s_CommandLineValues.File != null) {
       String code;
       try {
+        // In case a single file is given
+        // read all the contents immediately
+        // and pass it on to be processed.
         code = new String(Files.readAllBytes(s_CommandLineValues.File.toPath()));
-        System.out.println(code);
       } catch (IOException e) {
         e.printStackTrace();
         code = Common.EmptyString;
