@@ -12,6 +12,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+/**
+ * This class covers the data-format original to Code2Vec and Code2Seq.
+ * Namely, Java-Small, Java-Med, Java-Large.
+ * As this was the dataset provided by the authors,
+ */
 public class DefaultDataset implements Dataset {
 
   /**

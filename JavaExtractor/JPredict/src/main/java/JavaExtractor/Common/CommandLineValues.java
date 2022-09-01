@@ -77,5 +77,4 @@ public class CommandLineValues {
     }
   }
 
-  public CommandLineValues() {}
 }

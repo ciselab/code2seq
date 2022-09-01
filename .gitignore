@@ -6,4 +6,6 @@
 *.pyc
 target
 data
+.settings
+.classpath
 
