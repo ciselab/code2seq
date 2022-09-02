@@ -45,7 +45,6 @@ def ExtractFeaturesForDir(args, dir, prefix):
     if args.inline_comments == "true":
         command.append("--inline_comments")
     if args.dataset != "default":
-        print("\n\n\n" + args.dataset + "\n\n\n" )
         command.append("--dataset")
         command.append(str(args.dataset))
 

@@ -27,10 +27,16 @@
 # VAL_DIR="../../data/${DATASET_NAME}/final/jsonl/valid"
 # TEST_DIR="../../data/${DATASET_NAME}/final/jsonl/test"
 
-DATASET_NAME=default
-TRAIN_DIR="../../data/${DATASET_NAME}/training"
-VAL_DIR="../../data/${DATASET_NAME}/validation"
+# DATASET_NAME=default
+# TRAIN_DIR="../../data/${DATASET_NAME}/training"
+# VAL_DIR="../../data/${DATASET_NAME}/validation"
+# TEST_DIR="../../data/${DATASET_NAME}/test"
+
+DATASET_NAME=funcom
+TRAIN_DIR="../../data/${DATASET_NAME}/train"
+VAL_DIR="../../data/${DATASET_NAME}/valid"
 TEST_DIR="../../data/${DATASET_NAME}/test"
+
 
 MAX_DATA_CONTEXTS=1000
 MAX_CONTEXTS=200
