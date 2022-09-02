@@ -22,15 +22,12 @@
 #   step and set this value to the number of cores.
 # PYTHON - python3 interpreter alias.
 
-# DATASET_NAME=codesearchnet
-# TRAIN_DIR="../../data/${DATASET_NAME}/final/jsonl/train"
-# VAL_DIR="../../data/${DATASET_NAME}/final/jsonl/valid"
-# TEST_DIR="../../data/${DATASET_NAME}/final/jsonl/test"
+DATASET_NAME=codesearchnet
 
-DATASET_NAME=default
-TRAIN_DIR="../../data/${DATASET_NAME}/training"
-VAL_DIR="../../data/${DATASET_NAME}/validation"
-TEST_DIR="../../data/${DATASET_NAME}/test"
+INPUT_DIR=datasets
+TRAIN_DIR=${INPUT_DIR}/${DATASET_NAME}/dataset/train
+VAL_DIR=${INPUT_DIR}/${DATASET_NAME}/dataset/valid
+TEST_DIR=${INPUT_DIR}/${DATASET_NAME}/dataset/test
 
 MAX_DATA_CONTEXTS=1000
 MAX_CONTEXTS=200
@@ -40,13 +37,14 @@ NUM_THREADS=64
 PYTHON=python3
 ###########################################################
 
-TRAIN_DATA_FILE=${DATASET_NAME}.train.raw.txt
-VAL_DATA_FILE=${DATASET_NAME}.val.raw.txt
-TEST_DATA_FILE=${DATASET_NAME}.test.raw.txt
-EXTRACTOR_JAR=JavaExtractor/JPredict/target/JavaExtractor-0.0.1-SNAPSHOT.jar
+OUTPUT_DIR=${INPUT_DIR}/${DATASET_NAME}/preprocessed
 
-mkdir -p data 
-mkdir -p data/${DATASET_NAME}
+mkdir ${INPUT_DIR}/${DATASET_NAME}/preprocessed
+
+TRAIN_DATA_FILE=${OUTPUT_DIR}/${DATASET_NAME}.train.raw.txt
+VAL_DATA_FILE=${OUTPUT_DIR}/${DATASET_NAME}.val.raw.txt
+TEST_DATA_FILE=${OUTPUT_DIR}/${DATASET_NAME}.test.raw.txt
+EXTRACTOR_JAR=JavaExtractor/JPredict/target/JavaExtractor-0.0.1-SNAPSHOT.jar
 
 echo "Extracting paths from validation set..."
 ${PYTHON} JavaExtractor/extract.py --dir ${VAL_DIR} --max_path_length 8 --max_path_width 2 --num_threads ${NUM_THREADS} -d ${DATASET_NAME} --jar ${EXTRACTOR_JAR} > ${VAL_DATA_FILE} 2>> error_log.txt
@@ -58,9 +56,9 @@ echo "Extracting paths from training set..."
 ${PYTHON} JavaExtractor/extract.py --dir ${TRAIN_DIR} --max_path_length 8 --max_path_width 2 --num_threads ${NUM_THREADS} -d ${DATASET_NAME} --jar ${EXTRACTOR_JAR} | shuf > ${TRAIN_DATA_FILE} 2>> error_log.txt
 echo "Finished extracting paths from training set"
 
-TARGET_HISTOGRAM_FILE=data/${DATASET_NAME}/${DATASET_NAME}.histo.tgt.c2s
-SOURCE_SUBTOKEN_HISTOGRAM=data/${DATASET_NAME}/${DATASET_NAME}.histo.ori.c2s
-NODE_HISTOGRAM_FILE=data/${DATASET_NAME}/${DATASET_NAME}.histo.node.c2s
+TARGET_HISTOGRAM_FILE=${OUTPUT_DIR}/${DATASET_NAME}.histo.tgt.c2s
+SOURCE_SUBTOKEN_HISTOGRAM=${OUTPUT_DIR}/${DATASET_NAME}.histo.ori.c2s
+NODE_HISTOGRAM_FILE=${OUTPUT_DIR}/${DATASET_NAME}.histo.node.c2s
 
 echo "Creating histograms from the training data"
 cat ${TRAIN_DATA_FILE} | cut -d' ' -f1 | tr '|' '\n' | awk '{n[$0]++} END {for (i in n) print i,n[i]}' > ${TARGET_HISTOGRAM_FILE}
@@ -70,7 +68,7 @@ cat ${TRAIN_DATA_FILE} | cut -d' ' -f2- | tr ' ' '\n' | cut -d',' -f2 | tr '|' '
 ${PYTHON} preprocess.py --train_data ${TRAIN_DATA_FILE} --test_data ${TEST_DATA_FILE} --val_data ${VAL_DATA_FILE} \
   --max_contexts ${MAX_CONTEXTS} --max_data_contexts ${MAX_DATA_CONTEXTS} --subtoken_vocab_size ${SUBTOKEN_VOCAB_SIZE} \
   --target_vocab_size ${TARGET_VOCAB_SIZE} --subtoken_histogram ${SOURCE_SUBTOKEN_HISTOGRAM} \
-  --node_histogram ${NODE_HISTOGRAM_FILE} --target_histogram ${TARGET_HISTOGRAM_FILE} --output_name data/${DATASET_NAME}/${DATASET_NAME}
+  --node_histogram ${NODE_HISTOGRAM_FILE} --target_histogram ${TARGET_HISTOGRAM_FILE} --output_name ${OUTPUT_DIR}/${DATASET_NAME}
     
 # If all went well, the raw data files can be deleted, because preprocess.py creates new files 
 # with truncated and padded number of paths for each example.
