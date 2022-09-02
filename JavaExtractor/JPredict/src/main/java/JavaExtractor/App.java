@@ -17,6 +17,9 @@ public class App {
       case CODESEARCHNET:
         dataset = new CodeSearchNetDataset();
         break;
+      case FUNCOM:
+        dataset = new FuncomDataset();
+        break;
       default:
         dataset = new DefaultDataset();
     }

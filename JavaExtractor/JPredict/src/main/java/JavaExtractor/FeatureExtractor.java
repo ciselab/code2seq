@@ -78,6 +78,7 @@ class FeatureExtractor {
     final String classSuffix = "}";
     final String methodPrefix = "SomeUnknownReturnType f() {";
     final String methodSuffix = "return noSuchReturnValue; }";
+    final String bracketSuffix = "}";
 
     String content = code;
     CompilationUnit parsed;
@@ -89,9 +90,15 @@ class FeatureExtractor {
         content = classPrefix + methodPrefix + code + methodSuffix + classSuffix;
         parsed = JavaParser.parse(content);
       } catch (ParseProblemException e2) {
-        // Wrap with a class only
-        content = classPrefix + code + classSuffix;
-        parsed = JavaParser.parse(content);
+        // Wrap with an ending bracket
+        try {
+          content = code + bracketSuffix;
+          parsed = JavaParser.parse(content);
+        } catch (ParseProblemException e4) {
+          // Wrap with class only
+          content = classPrefix + code + classSuffix;
+          parsed = JavaParser.parse(content);
+        }
       }
     }
     return parsed;
