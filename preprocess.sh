@@ -25,9 +25,9 @@
 DATASET_NAME=codesearchnet
 
 INPUT_DIR=datasets
-TRAIN_DIR=${INPUT_DIR}/${DATASET_NAME}/dataset/train
-VAL_DIR=${INPUT_DIR}/${DATASET_NAME}/dataset/valid
-TEST_DIR=${INPUT_DIR}/${DATASET_NAME}/dataset/test
+TRAIN_DIR=${INPUT_DIR}/${DATASET_NAME}/raw/train
+VAL_DIR=${INPUT_DIR}/${DATASET_NAME}/raw/valid
+TEST_DIR=${INPUT_DIR}/${DATASET_NAME}/raw/test
 
 MAX_DATA_CONTEXTS=1000
 MAX_CONTEXTS=200
@@ -39,7 +39,7 @@ PYTHON=python3
 
 OUTPUT_DIR=${INPUT_DIR}/${DATASET_NAME}/preprocessed
 
-mkdir ${INPUT_DIR}/${DATASET_NAME}/preprocessed
+mkdir -p ${INPUT_DIR}/${DATASET_NAME}/preprocessed
 
 TRAIN_DATA_FILE=${OUTPUT_DIR}/${DATASET_NAME}.train.raw.txt
 VAL_DATA_FILE=${OUTPUT_DIR}/${DATASET_NAME}.val.raw.txt
