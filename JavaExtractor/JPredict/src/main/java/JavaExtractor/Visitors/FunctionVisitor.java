@@ -2,6 +2,7 @@ package JavaExtractor.Visitors;
 
 import JavaExtractor.Common.CommandLineValues;
 import JavaExtractor.Common.Common;
+import JavaExtractor.Common.Dataset;
 import JavaExtractor.Common.MethodContent;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -70,25 +71,33 @@ public class FunctionVisitor extends VoidVisitorAdapter<Object> {
 
     leavesCollectorVisitor.visitBreadthFirst(node);
     ArrayList<Node> leaves = leavesCollectorVisitor.getLeaves();
-    Optional<JavadocComment> javadocCommentOptional = node.getJavadocComment();
-    String comment = "";
-    if (javadocCommentOptional.isPresent()
-        && javadocCommentOptional.get().getContent().length() > 1) {
-      comment = javadocCommentOptional.get().getContent();
-    } else {
-      return;
-    }
-    // String normalizedMethodName = Common.normalizeName(node.getName().toString(),
-    // Common.BlankWord);
-    // ArrayList<String> splitNameParts =
-    // Common.splitToSubtokens(node.getName().toString());
-    String normalizedMethodName = Common.normalizeName(comment, Common.BlankWord);
-    if (normalizedMethodName == "BLANK") {
-      return;
-    }
-    ArrayList<String> splitNameParts = Common.splitToSubtokens(comment);
 
-    String splitName = normalizedMethodName;
+    String normalizedName;
+    ArrayList<String> splitNameParts;
+    if (m_CommandLineValues.ds.equals(Dataset.DEFAULT)) {
+      // Default dataset is aimed to test the method name generation task.
+      normalizedName = Common.normalizeName(node.getName().toString(), Common.BlankWord);
+      splitNameParts = Common.splitToSubtokens(node.getName().toString());
+
+    } else {
+      // Other datasets are used for generating descriptions and javadoc comments task.
+      Optional<JavadocComment> javadocCommentOptional = node.getJavadocComment();
+      String comment = "";
+      if (javadocCommentOptional.isPresent()
+          && javadocCommentOptional.get().getContent().length() > 1) {
+        comment = javadocCommentOptional.get().getContent();
+        normalizedName = Common.normalizeName(comment, Common.BlankWord);
+        splitNameParts = Common.splitToSubtokens(normalizedName);
+      } else {
+        return;
+      }
+    }
+
+    if (normalizedName == "BLANK") {
+      return;
+    }
+
+    String splitName = normalizedName;
     if (splitNameParts.size() > 0) {
       splitName = String.join(Common.internalSeparator, splitNameParts);
     }
