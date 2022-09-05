@@ -16,7 +16,7 @@ wget https://s3.us-east-2.amazonaws.com/leclair.tech/data/funcom/funcom_tokenize
 # cp ../../../data/funcom_tokenized.tar.gz funcom_tokenized.tar.gz
 # ------------ 
 
-cp ../../../data/funcom_shuffle.py funcom_shuffle.py
+cp ../../../dataset_scripts/funcom_shuffle.py funcom_shuffle.py
 
 # Unzip the downloaded archives
 tar xvf funcom_filtered.tar.gz
