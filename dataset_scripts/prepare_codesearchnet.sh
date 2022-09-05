@@ -11,7 +11,7 @@ cd ../datasets/codesearchnet
 unzip codesearchnet.zip
 rm codesearchnet.zip
 
-mv ./dataset ./raw 
+rm -rf raw && mv ./dataset ./raw 
 cd raw
 
 # ------------ 
