@@ -5,7 +5,7 @@ LABEL url="https://github.com/ciselab/code2seq"
 LABEL vcs="https://github.com/ciselab/code2seq"
 
 # Install Java
-RUN apt-get update && apt-get install ca-certificates-java -y && apt install openjdk-11-jdk -y
+RUN apt-get update && apt-get install ca-certificates-java -y && apt install openjdk-11-jdk -y  && apt install maven -y
 
 # Copy code2seq files
 COPY JavaExtractor/ /app/code2seq/JavaExtractor/
@@ -15,6 +15,10 @@ COPY requirements_docker.txt /app/code2seq/
 
 COPY cppminer/ /app/code2seq/cppminer/
 COPY Input.source /app/code2seq/
+
+# Compile JavaExtractor
+WORKDIR /app/code2seq/JavaExtractor/JPredict
+RUN mvn package
 
 # Install code2seq requirements
 WORKDIR /app/code2seq
