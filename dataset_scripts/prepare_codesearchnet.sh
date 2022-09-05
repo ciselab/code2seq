@@ -16,10 +16,10 @@ cd raw
 
 # ------------ 
 # Download and unzip dataset
-# wget https://s3.amazonaws.com/code-search-net/CodeSearchNet/v2/java.zip
+wget https://s3.amazonaws.com/code-search-net/CodeSearchNet/v2/java.zip
 
 # Or: copy an existing dataset
-cp ../../../data/java.zip ./java.zip
+# cp ../../../data/java.zip ./java.zip
 # ------------ 
 
 unzip java.zip 
