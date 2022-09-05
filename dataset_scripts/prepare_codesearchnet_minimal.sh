@@ -8,8 +8,8 @@ cd ../datasets/codesearchnet/raw
 # Trim the dataset
 echo "Trimming the dataset..."
 
-sed -i '1001,$ d' test/test.jsonl
-sed -i '1001,$ d' train/train.jsonl
-sed -i '1001,$ d' valid/valid.jsonl
+echo "$(head -n 1000 test/test.jsonl)" > test/test.jsonl
+echo "$(head -n 1000 train/train.jsonl)" > train/train.jsonl
+echo "$(head -n 1000 valid/valid.jsonl)" > valid/valid.jsonl
 
 echo "Dataset prepared."

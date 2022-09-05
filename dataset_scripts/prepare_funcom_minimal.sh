@@ -8,8 +8,8 @@ cd ../datasets/funcom/raw
 # Trim the dataset
 echo "Trimming the dataset..."
 
-sed -i '1001,$ d' test/functions.test.jsonl
-sed -i '1001,$ d' train/functions.train.jsonl
-sed -i '1001,$ d' valid/functions.val.jsonl
+echo "$(head -n 1000 test/functions.test.jsonl)" > test/functions.test.jsonl
+echo "$(head -n 1000 train/functions.train.jsonl)" > train/functions.train.jsonl
+echo "$(head -n 1000 valid/functions.val.jsonl)" > valid/functions.val.jsonl
 
 echo "Dataset prepared."
