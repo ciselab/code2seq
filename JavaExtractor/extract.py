@@ -75,6 +75,7 @@ def ExtractFeaturesForDir(args, dir, prefix):
     if failed:
         if os.path.exists(outputFileName):
             os.remove(outputFileName)
+        sys.exit(1)
 
 
 def ExtractFeaturesForDirsList(args, dirs):
@@ -138,7 +139,8 @@ if __name__ == "__main__":
             + " --file "
             + args.file
         )
-        os.system(command)
+        exit_code = os.system(command)
+        sys.exit(exit_code)
     elif args.dir is not None:
         subdirs = get_immediate_subdirectories(args.dir)
         if len(subdirs) == 0:
