@@ -22,6 +22,9 @@
 #   step and set this value to the number of cores.
 # PYTHON - python3 interpreter alias.
 
+# set -e makes the shell script exit if any command exists with non-zero exit code
+set -e
+
 DATASET_NAME=codesearchnet
 
 INPUT_DIR=datasets
