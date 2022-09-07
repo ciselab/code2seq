@@ -28,6 +28,10 @@ class ModelRunner:
                 target_to_count = pickle.load(file)
                 max_contexts = pickle.load(file)
                 self.num_training_examples = pickle.load(file)
+                if self.num_training_examples == 0:
+                    print("Didn't receive any training examples!")
+                    print("Please check your file-paths and file-contents.")
+                    sys.exit(1)
                 print('Num training samples: {0}'.format(self.num_training_examples))
                 print('Dictionaries loaded.')
 
@@ -196,7 +200,7 @@ class ModelRunner:
             model_dirname = os.path.dirname(self.config.MODEL_PATH)
         else:
             model_dirname = None
-            print('Model directory is mossing')
+            print('Model directory is missing')
             exit(-1)
 
         ref_file_name = os.path.join(model_dirname, 'ref.txt')
@@ -214,6 +218,11 @@ class ModelRunner:
             total_prediction_batches = 0
             true_positive, false_positive, false_negative = 0, 0, 0
             dataset = self.test_dataset_reader.get_dataset()
+            if not any(True for _ in dataset):
+                print("Evaluation Dataset was Empty!")
+                print("Please check your file-paths and file-contents.")
+                sys.exit(1)
+            
             start_time = time.time()
 
             for input_tensors in dataset:
