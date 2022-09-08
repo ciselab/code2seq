@@ -6,6 +6,6 @@
 *.pyc
 target
 data
+models
 .settings
 .classpath
-/datasets/
