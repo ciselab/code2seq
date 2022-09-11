@@ -39,7 +39,7 @@ public class CommandLineValues {
   public int MaxChildId = 3;
 
   @Option(
-      name = "--inline_comments",
+      name = "--include_comments",
       required = false,
       handler = ExplicitBooleanOptionHandler.class)
   public boolean IncludeComments = false;
@@ -76,5 +76,4 @@ public class CommandLineValues {
       throw e;
     }
   }
-
 }

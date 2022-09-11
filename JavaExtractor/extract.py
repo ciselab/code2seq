@@ -26,6 +26,7 @@ def ParallelExtractDir(args, dir):
 
 
 def ExtractFeaturesForDir(args, dir, prefix):
+
     command = [
         "java",
         "-Xmx100g",
@@ -41,9 +42,16 @@ def ExtractFeaturesForDir(args, dir, prefix):
         dir,
         "--num_threads",
         str(args.num_threads),
+        "--include_comments",
+        str(args.include_comments),
+        "--exclude_stopwords",
+        str(args.exclude_stopwords),
+        "--include_tfidf",
+        str(args.include_tfidf),
+        "--number_keywords",
+        str(args.number_keywords),
     ]
-    if args.inline_comments == "true":
-        command.append("--inline_comments")
+
     if args.dataset != "default":
         command.append("--dataset")
         command.append(str(args.dataset))
@@ -118,13 +126,36 @@ if __name__ == "__main__":
     parser.add_argument("-dir", "--dir", dest="dir", required=False)
     parser.add_argument("-file", "--file", dest="file", required=False)
     parser.add_argument(
-        "-inline_comments",
-        "--inline_comments",
-        dest="inline_comments",
+        "-inclcomm",
+        "--include_comments",
+        dest="include_comments",
         required=False,
         default=False,
     )
-    parser.add_argument("-d", "--dataset", dest="dataset", required=False, default="default")
+    parser.add_argument(
+        "-exclstop",
+        "--exclude_stopwords",
+        dest="exclude_stopwords",
+        required=False,
+        default=False,
+    )
+    parser.add_argument(
+        "-incltfidf",
+        "--include_tfidf",
+        dest="include_tfidf",
+        required=False,
+        default=False,
+    )
+    parser.add_argument(
+        "-numkeywords",
+        "--number_keywords",
+        dest="number_keywords",
+        required=False,
+        default=4,
+    )
+    parser.add_argument(
+        "-d", "--dataset", dest="dataset", required=False, default="default"
+    )
     args = parser.parse_args()
 
     if args.file is not None:
