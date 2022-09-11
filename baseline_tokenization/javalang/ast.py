@@ -5,14 +5,14 @@ import six
 
 class MetaNode(type):
     def __new__(mcs, name, bases, dict):
-        attrs = list(dict['attrs'])
-        dict['attrs'] = list()
+        attrs = list(dict["attrs"])
+        dict["attrs"] = list()
 
         for base in bases:
-            if hasattr(base, 'attrs'):
-                dict['attrs'].extend(base.attrs)
+            if hasattr(base, "attrs"):
+                dict["attrs"].extend(base.attrs)
 
-        dict['attrs'].extend(attrs)
+        dict["attrs"].extend(attrs)
 
         return type.__new__(mcs, name, bases, dict)
 
@@ -29,7 +29,7 @@ class Node(object):
             setattr(self, attr_name, value)
 
         if values:
-            raise ValueError('Extraneous arguments')
+            raise ValueError("Extraneous arguments")
 
     def __equals__(self, other):
         if type(other) is not type(self):
@@ -49,13 +49,15 @@ class Node(object):
 
     def filter(self, pattern):
         for path, node in self:
-            if ((isinstance(pattern, type) and isinstance(node, pattern)) or
-                (node == pattern)):
+            if (isinstance(pattern, type) and isinstance(node, pattern)) or (
+                node == pattern
+            ):
                 yield path, node
 
     @property
     def children(self):
         return [getattr(self, attr_name) for attr_name in self.attrs]
+
 
 def walk_tree(root):
     children = None
@@ -71,8 +73,10 @@ def walk_tree(root):
             for path, node in walk_tree(child):
                 yield (root,) + path, node
 
+
 def dump(ast, file):
     pickle.dump(ast, file)
+
 
 def load(file):
     return pickle.load(file)
