@@ -8,6 +8,15 @@
 
 dataset_name=codesearchnet
 
+# Get dataset name from -d flag
+while getopts "d:" arg; do
+    case $arg in
+        d) dataset_name=$OPTARG;
+    esac
+done
+
+echo "Dataset: $dataset_name" 
+
 type=trained_${dataset_name}
 data_dir=datasets/${dataset_name}/preprocessed
 data=${data_dir}/${dataset_name}

@@ -27,6 +27,15 @@ set -e
 
 DATASET_NAME=codesearchnet
 
+# Get dataset name from -d flag
+while getopts "d:" arg; do
+    case $arg in
+      d) DATASET_NAME=$OPTARG;;
+    esac
+done
+
+echo "Dataset: $DATASET_NAME" 
+
 INPUT_DIR=datasets
 TRAIN_DIR=${INPUT_DIR}/${DATASET_NAME}/raw/train
 VAL_DIR=${INPUT_DIR}/${DATASET_NAME}/raw/valid
