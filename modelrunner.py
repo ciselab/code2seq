@@ -195,9 +195,9 @@ class ModelRunner:
         eval_start_time = time.time()
 
         if self.config.LOAD_PATH and not self.config.TRAIN_PATH:
-            model_dirname = os.path.dirname(self.config.LOAD_PATH)
+            model_dirname = self.config.LOAD_PATH
         elif self.config.MODEL_PATH:
-            model_dirname = os.path.dirname(self.config.MODEL_PATH)
+            model_dirname = self.config.MODEL_PATH
         else:
             model_dirname = None
             print('Model directory is missing')
