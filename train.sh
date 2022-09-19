@@ -6,7 +6,7 @@
 #   will be evaluated after each training iteration. If you wish to test
 #   on the final (held-out) test set, change 'val' to 'test'.
 
-dataset_name=codesearchnet
+dataset_name=default
 
 # Get dataset name from -d flag
 while getopts "d:" arg; do

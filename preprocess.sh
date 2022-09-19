@@ -25,7 +25,7 @@
 # set -e makes the shell script exit if any command exists with non-zero exit code
 set -e
 
-DATASET_NAME=codesearchnet
+DATASET_NAME=default
 
 # Get dataset name from -d flag
 while getopts "d:" arg; do
