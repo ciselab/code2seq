@@ -9,7 +9,7 @@ else echo "Not preprocessing."
 fi
 
 if [ "$train" = true -a "$trainFromScratch" = true ]; 
-then bash train.sh  "$dataset" 
+then bash train.sh -d "$dataset" 
 else echo "Not training a new model."
 fi
 
