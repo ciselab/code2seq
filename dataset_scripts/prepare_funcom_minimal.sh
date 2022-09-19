@@ -21,4 +21,5 @@ else
     echo "$(head -n 50 valid/functions.val.jsonl)" > valid/functions.val.jsonl
 fi
 
-echo "Dataset prepared."
+echo "Funcom minimal dataset prepared."
+exit

@@ -20,4 +20,5 @@ else
     echo "$(head -n 50 valid/valid.jsonl)" > valid/valid.jsonl
 fi
 
-echo "Dataset prepared."
+echo "Codesearch minimal dataset prepared."
+exit

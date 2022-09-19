@@ -27,5 +27,5 @@ mv java-small/validation ./valid
 rm *.tar.gz
 rm -rf java*
 
-# echo "Dataset downloaded and prepared."
+echo "Default dataset prepared."
 exit

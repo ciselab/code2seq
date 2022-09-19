@@ -33,5 +33,5 @@ rm -rf */final
 rm -rf java*
 rm preprocess.py
 
-echo "Dataset downloaded and prepared."
+echo "Codesearchnet dataset prepared."
 exit

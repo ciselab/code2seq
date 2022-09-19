@@ -12,4 +12,5 @@ else
     bash prepare_default.sh  
 fi
 
-echo "Dataset prepared."
+echo "Default minimal dataset prepared."
+exit

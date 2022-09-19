@@ -42,5 +42,5 @@ rm comments
 rm fid_pid
 rm functions.json
 
-echo "Dataset downloaded and prepared."
+echo "Funcom dataset prepared."
 exit
