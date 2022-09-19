@@ -13,6 +13,7 @@ services:
       - ./datasets/codesearchnet/preprocessed:/app/code2seq/datasets/codesearchnet/preprocessed:rw
       
     environment:
+      dataset: "codesearchnet"
     # Preprocessing variables
       preprocess: true
       comments: true
