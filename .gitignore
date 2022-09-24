@@ -4,4 +4,8 @@
 *.iml
 *.xml
 *.pyc
-
+target
+data
+models
+.settings
+.classpath

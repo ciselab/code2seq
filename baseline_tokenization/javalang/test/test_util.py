@@ -27,27 +27,27 @@ class TestLookAheadIterator(unittest.TestCase):
         self.assertEqual(next(i), 3)
         self.assertEqual(next(i), 4)
         self.assertEqual(next(i), 5)
-        i.pop_marker(True) # reset
+        i.pop_marker(True)  # reset
 
         self.assertEqual(i.look(), 3)
         self.assertEqual(next(i), 3)
 
-        i.push_marker() #1
+        i.push_marker()  # 1
         self.assertEqual(next(i), 4)
         self.assertEqual(next(i), 5)
-        i.push_marker() #2
+        i.push_marker()  # 2
         self.assertEqual(next(i), 6)
         self.assertEqual(next(i), 7)
-        i.push_marker() #3
+        i.push_marker()  # 3
         self.assertEqual(next(i), 8)
         self.assertEqual(next(i), 9)
-        i.pop_marker(False) #3
+        i.pop_marker(False)  # 3
         self.assertEqual(next(i), 10)
-        i.pop_marker(True) #2
+        i.pop_marker(True)  # 2
         self.assertEqual(next(i), 6)
         self.assertEqual(next(i), 7)
         self.assertEqual(next(i), 8)
-        i.pop_marker(False) #1
+        i.pop_marker(False)  # 1
         self.assertEqual(next(i), 9)
 
         try:
@@ -65,5 +65,5 @@ class TestLookAheadIterator(unittest.TestCase):
         self.assertEqual(next(i), 14)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     unittest.main()

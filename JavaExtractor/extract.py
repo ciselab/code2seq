@@ -11,8 +11,11 @@ from threading import Timer
 
 
 def get_immediate_subdirectories(a_dir):
-    return [(os.path.join(a_dir, name)) for name in os.listdir(a_dir)
-            if os.path.isdir(os.path.join(a_dir, name))]
+    return [
+        (os.path.join(a_dir, name))
+        for name in os.listdir(a_dir)
+        if os.path.isdir(os.path.join(a_dir, name))
+    ]
 
 
 TMP_DIR = ""
@@ -23,18 +26,44 @@ def ParallelExtractDir(args, dir):
 
 
 def ExtractFeaturesForDir(args, dir, prefix):
-    command = ['java', '-Xmx100g', '-XX:MaxNewSize=60g', '-cp', args.jar, 'JavaExtractor.App',
-               '--max_path_length', str(args.max_path_length), '--max_path_width', str(args.max_path_width),
-               '--dir', dir, '--num_threads', str(args.num_threads)]
+
+    command = [
+        "java",
+        "-Xmx100g",
+        "-XX:MaxNewSize=60g",
+        "-cp",
+        args.jar,
+        "JavaExtractor.App",
+        "--max_path_length",
+        str(args.max_path_length),
+        "--max_path_width",
+        str(args.max_path_width),
+        "--dir",
+        dir,
+        "--num_threads",
+        str(args.num_threads),
+        "--include_comments",
+        str(args.include_comments),
+        "--exclude_stopwords",
+        str(args.exclude_stopwords),
+        "--include_tfidf",
+        str(args.include_tfidf),
+        "--number_keywords",
+        str(args.number_keywords),
+    ]
+
+    if args.dataset != "default":
+        command.append("--dataset")
+        command.append(str(args.dataset))
 
     # print command
     # os.system(command)
     kill = lambda process: process.kill()
-    outputFileName = TMP_DIR + prefix + dir.split('/')[-1]
+    outputFileName = TMP_DIR + prefix + dir.split("/")[-1]
     failed = False
-    with open(outputFileName, 'a') as outputFile:
+    with open(outputFileName, "a") as outputFile:
         sleeper = subprocess.Popen(command, stdout=outputFile, stderr=subprocess.PIPE)
-        timer = Timer(60 * 60, kill, [sleeper])
+        timer = Timer(60 * 60 * 60 * 60, kill, [sleeper])
 
         try:
             timer.start()
@@ -46,14 +75,15 @@ def ExtractFeaturesForDir(args, dir, prefix):
             if len(stderr) > 0:
                 print(stderr, file=sys.stderr)
         else:
-            print('dir: ' + str(dir) + ' was not completed in time', file=sys.stderr)
+            print("dir: " + str(dir) + " was not completed in time", file=sys.stderr)
             failed = True
             subdirs = get_immediate_subdirectories(dir)
             for subdir in subdirs:
-                ExtractFeaturesForDir(args, subdir, prefix + dir.split('/')[-1] + '_')
+                ExtractFeaturesForDir(args, subdir, prefix + dir.split("/")[-1] + "_")
     if failed:
         if os.path.exists(outputFileName):
             os.remove(outputFileName)
+        sys.exit(1)
 
 
 def ExtractFeaturesForDirsList(args, dirs):
@@ -74,20 +104,74 @@ def ExtractFeaturesForDirsList(args, dirs):
         shutil.rmtree(TMP_DIR, ignore_errors=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("-maxlen", "--max_path_length", dest="max_path_length", required=False, default=8)
-    parser.add_argument("-maxwidth", "--max_path_width", dest="max_path_width", required=False, default=2)
-    parser.add_argument("-threads", "--num_threads", dest="num_threads", required=False, default=64)
+    parser.add_argument(
+        "-maxlen",
+        "--max_path_length",
+        dest="max_path_length",
+        required=False,
+        default=8,
+    )
+    parser.add_argument(
+        "-maxwidth",
+        "--max_path_width",
+        dest="max_path_width",
+        required=False,
+        default=2,
+    )
+    parser.add_argument(
+        "-threads", "--num_threads", dest="num_threads", required=False, default=64
+    )
     parser.add_argument("-j", "--jar", dest="jar", required=True)
     parser.add_argument("-dir", "--dir", dest="dir", required=False)
     parser.add_argument("-file", "--file", dest="file", required=False)
+    parser.add_argument(
+        "-inclcomm",
+        "--include_comments",
+        dest="include_comments",
+        required=False,
+        default=False,
+    )
+    parser.add_argument(
+        "-exclstop",
+        "--exclude_stopwords",
+        dest="exclude_stopwords",
+        required=False,
+        default=False,
+    )
+    parser.add_argument(
+        "-incltfidf",
+        "--include_tfidf",
+        dest="include_tfidf",
+        required=False,
+        default=False,
+    )
+    parser.add_argument(
+        "-numkeywords",
+        "--number_keywords",
+        dest="number_keywords",
+        required=False,
+        default=4,
+    )
+    parser.add_argument(
+        "-d", "--dataset", dest="dataset", required=False, default="default"
+    )
     args = parser.parse_args()
 
     if args.file is not None:
-        command = 'java -cp ' + args.jar + ' JavaExtractor.App --max_path_length ' + \
-                  str(args.max_path_length) + ' --max_path_width ' + str(args.max_path_width) + ' --file ' + args.file
-        os.system(command)
+        command = (
+            "java -cp "
+            + args.jar
+            + " JavaExtractor.App --max_path_length "
+            + str(args.max_path_length)
+            + " --max_path_width "
+            + str(args.max_path_width)
+            + " --file "
+            + args.file
+        )
+        exit_code = os.system(command)
+        sys.exit(exit_code)
     elif args.dir is not None:
         subdirs = get_immediate_subdirectories(args.dir)
         if len(subdirs) == 0:

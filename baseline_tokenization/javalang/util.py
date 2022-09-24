@@ -1,5 +1,3 @@
-
-
 class LookAheadIterator(object):
     def __init__(self, iterable):
         self.iterable = iter(iterable)
@@ -29,7 +27,7 @@ class LookAheadIterator(object):
         return self.value
 
     def look(self, i=0):
-        """ Look ahead of the iterable by some number of values with advancing
+        """Look ahead of the iterable by some number of values with advancing
         past them.
 
         If the requested look ahead is past the end of the iterable then None is
@@ -41,8 +39,9 @@ class LookAheadIterator(object):
 
         if length <= i:
             try:
-                self.look_ahead.extend([next(self.iterable)
-                    for _ in range(length, i + 1)])
+                self.look_ahead.extend(
+                    [next(self.iterable) for _ in range(length, i + 1)]
+                )
             except StopIteration:
                 return self.default
 
@@ -64,11 +63,11 @@ class LookAheadIterator(object):
             self.pop_marker(False)
 
     def push_marker(self):
-        """ Push a marker on to the marker stack """
+        """Push a marker on to the marker stack"""
         self.markers.append(list())
 
     def pop_marker(self, reset):
-        """ Pop a marker off of the marker stack. If reset is True then the
+        """Pop a marker off of the marker stack. If reset is True then the
         iterator will be returned to the state it was in before the
         corresponding call to push_marker().
 
@@ -86,6 +85,7 @@ class LookAheadIterator(object):
         else:
             # If there are not more markers in the stack then discard the values
             pass
+
 
 class LookAheadListIterator(object):
     def __init__(self, iterable):
@@ -116,7 +116,7 @@ class LookAheadListIterator(object):
         return self.value
 
     def look(self, i=0):
-        """ Look ahead of the iterable by some number of values with advancing
+        """Look ahead of the iterable by some number of values with advancing
         past them.
 
         If the requested look ahead is past the end of the iterable then None is
@@ -146,11 +146,11 @@ class LookAheadListIterator(object):
             self.pop_marker(False)
 
     def push_marker(self):
-        """ Push a marker on to the marker stack """
+        """Push a marker on to the marker stack"""
         self.saved_markers.append(self.marker)
 
     def pop_marker(self, reset):
-        """ Pop a marker off of the marker stack. If reset is True then the
+        """Pop a marker off of the marker stack. If reset is True then the
         iterator will be returned to the state it was in before the
         corresponding call to push_marker().
 
@@ -162,4 +162,3 @@ class LookAheadListIterator(object):
             self.marker = saved
         elif self.saved_markers:
             self.saved_markers[-1] = saved
-
