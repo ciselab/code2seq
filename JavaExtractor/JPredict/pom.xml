@@ -125,6 +125,12 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.5</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-lambda</artifactId>
+            <version>1.2.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <!-- <build> -->
     <!--     <finalName>maven-unit-test</finalName> -->

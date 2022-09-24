@@ -11,7 +11,7 @@ import org.kohsuke.args4j.CmdLineException;
  * Runs an example End-to-End test on the example .jsonl Important: The args cannot end with a
  * space! E.g. having "--file " instead of "--file" will result in errors.
  */
-public class EndToEndTest {
+public class EndToEndAppTest {
 
   @Tag("File")
   @Test
