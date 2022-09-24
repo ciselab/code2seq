@@ -1,6 +1,7 @@
 class Config:
     @staticmethod
-    def get_default_config(args):
+    def get_default_config(args): 
+        # Training configs
         config = Config(args)
         config.NUM_EPOCHS = 3000
         config.SAVE_EVERY_EPOCHS = 1
