@@ -47,7 +47,7 @@ def read_args():
         "--predict",
         dest="predict",
         type=str,
-        default="java",
+        default="",
         help='starts prediction mode, argument is "cpp" or "java" dependin on language model',
     )
     parser.add_argument("--debug", action="store_true")
