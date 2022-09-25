@@ -4,7 +4,7 @@
 set -e
 
 if [ "$preprocess" = true ]; 
-then bash preprocess.sh -d "$dataset" 
+then bash preprocess.sh --dataset="$dataset" --include_comments="$includeComments" --exclude_stopwords="$excludeStopwords" --include_tfidf="$useTfidf" --number_keywords="$numberOfTfidfKeywords"
 else echo "Not preprocessing."
 fi
 

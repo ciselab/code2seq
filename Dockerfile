@@ -24,10 +24,13 @@ RUN mvn package
 WORKDIR /app/code2seq
 RUN pip install -r requirements_docker.txt
 
-# Preprocess variables
+# Default preprocess variables
+ENV dataset="default"
 ENV preprocess=true
-ENV comments=true
-ENV stopwords=true
+ENV includeComments=true
+ENV excludeStopwords=true
+ENV useTfidf=true
+ENV numberOfTfidfKeywords="50"
 
 # Training variables
 ENV train=true

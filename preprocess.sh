@@ -25,23 +25,49 @@
 # set -e makes the shell script exit if any command exists with non-zero exit code
 set -e
 
+# Default preprocessing values
 DATASET_NAME=default
+INCLUDE_COMMENTS=true
+EXCLUDE_STOPWORDS=false
+USE_TFIDF=false
+NUMBER_OF_TFIDF_KEYWORDS=45
 
-# Get dataset name from -d flag
-while getopts "d:" arg; do
-    case $arg in
-      d) DATASET_NAME=$OPTARG;;
-    esac
+# This code block is used to get long two-dash arguments from the command line.
+die() { echo "$*" >&2; exit 2; }  # complain to STDERR and exit with error
+needs_arg() { if [ -z "$OPTARG" ]; then die "No arg for --$OPT option"; fi; }
+
+while getopts ab:c:-: OPT; do
+  # support long options: https://stackoverflow.com/a/28466267/519360
+  if [ "$OPT" = "-" ]; then   # long option: reformulate OPT and OPTARG
+    OPT="${OPTARG%%=*}"       # extract long option name
+    OPTARG="${OPTARG#$OPT}"   # extract long option argument (may be empty)
+    OPTARG="${OPTARG#=}"      # if long option argument, remove assigning `=`
+  fi
+  case "$OPT" in
+    dataset )    DATASET_NAME="$OPTARG" ;;
+    include_comments )     INCLUDE_COMMENTS="$OPTARG" ;;
+    exclude_stopwords ) EXCLUDE_STOPWORDS="$OPTARG" ;;
+    include_tfidf )  USE_TFIDF="$OPTARG" ;;
+    number_keywords )  NUMBER_OF_TFIDF_KEYWORDS="$OPTARG" ;;
+    ??* )          die "Illegal option --$OPT" ;;  # bad long option
+    ? )            exit 2 ;;  # bad short option (error reported via getopts)
+  esac
 done
+shift $((OPTIND-1)) # remove parsed options and args from $@ list
 
 echo "Dataset: $DATASET_NAME" 
+echo "Including comments: $INCLUDE_COMMENTS" 
+echo "Excluding stopwords: $EXCLUDE_STOPWORDS" 
+echo "Using TFIDF: $USE_TFIDF" 
+echo "TFIDF keywords: $NUMBER_OF_TFIDF_KEYWORDS" 
+
 
 INPUT_DIR=datasets
 TRAIN_DIR=${INPUT_DIR}/${DATASET_NAME}/raw/train
 VAL_DIR=${INPUT_DIR}/${DATASET_NAME}/raw/valid
 TEST_DIR=${INPUT_DIR}/${DATASET_NAME}/raw/test
 
-
+# Preprocessing configs
 MAX_DATA_CONTEXTS=1000
 MAX_CONTEXTS=200
 SUBTOKEN_VOCAB_SIZE=186277
