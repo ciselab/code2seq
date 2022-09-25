@@ -34,7 +34,6 @@ ENV numberOfTfidfKeywords="50"
 
 # Training variables
 ENV train=true
-ENV trainFromScratch=true
 ENV continueTrainingFromCheckpoint=false 
 
 #Evaluation variables

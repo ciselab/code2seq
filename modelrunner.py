@@ -135,8 +135,7 @@ class ModelRunner:
             checkpoint_manager = tf.train.CheckpointManager(
                 checkpoint, self.config.MODEL_PATH, max_to_keep=3
             )
-
-            if checkpoint_manager.latest_checkpoint:
+            if checkpoint_manager.latest_checkpoint and self.config.CONTINUE_FROM_CHECKPOINT == "true":
                 checkpoint.restore(checkpoint_manager.latest_checkpoint)
                 print("Restored from {}".format(checkpoint_manager.latest_checkpoint))
             else:

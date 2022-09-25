@@ -22,7 +22,6 @@ services:
       numberOfTfidfKeywords: "569"
     # Training variables
       train: true
-      trainFromScratch: true
       continueTrainingFromCheckpoint: false
     # Evaluation variables
     # add more flags here
