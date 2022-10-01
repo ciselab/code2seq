@@ -75,7 +75,16 @@ public class EndToEndAppTest {
   @Test
   void testApp_OnBadFile_ShouldThrowError() {
     String testFilePath = "src/test/resources/jsonls/jsonTest.jsonl";
-    String[] args = {"--file", testFilePath, "--max_path_length", "200", "--max_path_width", "10"};
+    String[] args = {
+      "--file",
+      testFilePath,
+      "--max_path_length",
+      "200",
+      "--max_path_width",
+      "10",
+      "--dataset",
+      "funcom"
+    };
 
     assertThrows(ParseProblemException.class, () -> App.main(args));
   }
