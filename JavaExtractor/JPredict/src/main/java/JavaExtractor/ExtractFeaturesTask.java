@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringJoiner;
 import java.util.concurrent.Callable;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,12 +90,12 @@ class ExtractFeaturesTask implements Callable<Void> {
     StringJoiner sj = new StringJoiner(" ", "// ", "\n");
     comments
         .lines()
+        .filter(Predicate.not(String::isEmpty))
         .forEach(
             l -> {
-              if (!l.isEmpty())
-                sj.add(
-                    l.replaceAll(
-                        ".*//(\\s)*", "")); // remove comment signs with any whitespace before text
+              sj.add(
+                  l.replaceAll(
+                      ".*//(\\s)*", "")); // remove comment signs with any whitespace before text
             });
     return sj.toString();
   }
