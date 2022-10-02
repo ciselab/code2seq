@@ -58,12 +58,12 @@ class ExtractFeaturesTask implements Callable<Void> {
   /**
    * Iterate over the orphan comments in the code snippet and replace them with merged single line
    * comments. The pattern can be decyphered as follows: <.*> - Match enything before the comment
-   * signs zero or more times (whitespace) <\\/\\/.*> - Match the // sign of a singel line comment
-   * <(\n)*> - Match a newline character zero or more times <(...){2,}> - there must be two or more
-   * of such occurences.
+   * signs zero or more times (for whitespace). <\\/\\/.*> - Match the // sign of a single line
+   * comment. <(\n)*> - Match a newline character zero or more times. <(...){2,}> - there must be
+   * two or more of such occurences.
    *
    * @param original the original string
-   * @return a string with words replaced with their lowercase equivalents
+   * @return a string with sequential comments combined into a single comment.
    */
   public String connectOrphanComments(String original) {
     int lastIndex = 0;
