@@ -4,6 +4,7 @@ import JavaExtractor.Common.CommandLineValues;
 import JavaExtractor.FeaturesEntities.ProgramFeatures;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.StringJoiner;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,7 +56,10 @@ class ExtractFeaturesTask implements Callable<Void> {
 
   /**
    * Iterate over the orphan comments in the code snippet and replace them with merged single line
-   * comments.
+   * comments. The pattern can be decyphered as follows: <.*> - Match enything before the comment
+   * signs zero or more times (whitespace) <\\/\\/.*> - Match the // sign of a singel line comment
+   * <(\n)*> - Match a newline character zero or more times <(...){2,}> - there must be two or more
+   * of such occurences.
    *
    * @param original the original string
    * @return a string with words replaced with their lowercase equivalents
@@ -82,16 +86,16 @@ class ExtractFeaturesTask implements Callable<Void> {
   }
 
   public String concatinateComments(String comments) {
-    StringBuilder sb = new StringBuilder();
-    sb.append("// ");
+    StringJoiner sj = new StringJoiner(" ", "// ", "\n");
     comments
         .lines()
         .forEach(
             l -> {
-              sb.append(l.replaceAll(".*//", "")); // remove comment signs
-              sb.append(" "); // add space between different comments
+              if (!l.isEmpty())
+                sj.add(
+                    l.replaceAll(
+                        ".*//(\\s)*", "")); // remove comment signs with any whitespace before text
             });
-    sb.append("\n");
-    return sb.toString();
+    return sj.toString();
   }
 }
