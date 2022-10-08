@@ -16,13 +16,12 @@ services:
       dataset: "codesearchnet"
     # Preprocessing variables
       preprocess: true
-      includeComments: false
+      includeComments: true
       excludeStopwords: false
-      useTfidf: false
-      numberOfTfidfKeywords: "569"
+      useTfidf: true
+      numberOfTfidfKeywords: "50"
     # Training variables
       train: true
-      trainFromScratch: true
       continueTrainingFromCheckpoint: false
     # Evaluation variables
     # add more flags here

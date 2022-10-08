@@ -50,6 +50,14 @@ def read_args():
         default="",
         help='starts prediction mode, argument is "cpp" or "java" dependin on language model',
     )
+    parser.add_argument(
+        "-c",
+        "--continue_training_from_checkpoint",
+        dest="continue_from_checkpoint",
+        type=str,
+        help='Continue training model from a previous checkpoint, if it exists.',
+    )
+
     parser.add_argument("--debug", action="store_true")
     parser.add_argument("--seed", type=int, default=239)
     return parser.parse_args()
