@@ -1,10 +1,14 @@
 package JavaExtractor.Common;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+
+import org.apache.commons.io.IOUtils;
 
 public class StopWordsFilter {
 
@@ -13,11 +17,9 @@ public class StopWordsFilter {
   /** Get list of stopwords from dataset */
   public static void setup() {
     try {
-      stopwords = Files.readAllLines(Paths.get(StopWordsFilter.class.getClassLoader().getResource("stop_words.txt").toURI()));
+      stopwords = IOUtils.readLines(StopWordsFilter.class.getClassLoader().getResourceAsStream("stop_words.txt"), "UTF-8");
     } catch (IOException e) {
-      e.printStackTrace();
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
+      System.out.println(e);
     }
   }
 
