@@ -1,6 +1,7 @@
 class Config:
     @staticmethod
-    def get_default_config(args):
+    def get_default_config(args): 
+        # Training configs
         config = Config(args)
         config.NUM_EPOCHS = 3000
         config.SAVE_EVERY_EPOCHS = 1
@@ -43,12 +44,14 @@ class Config:
             self.MODEL_PATH = args.model_path if args.model_path is not None else None
             self.SAVE_PATH = args.save_path if args.save_path is not None else None
             self.LOAD_PATH = args.load_path if args.load_path is not None else None
+            self.CONTINUE_FROM_CHECKPOINT = args.continue_from_checkpoint if args.continue_from_checkpoint is not None else None
         else:
             self.TRAIN_PATH = None
             self.TEST_PATH = None
             self.MODEL_PATH = None
             self.SAVE_PATH = None
             self.LOAD_PATH = None
+            self.CONTINUE_FROM_CHECKPOINT = None
 
         self.NUM_EPOCHS = 0
         self.SAVE_EVERY_EPOCHS = 0

@@ -4,11 +4,15 @@ import JavaExtractor.Common.CommandLineValues;
 import JavaExtractor.FeaturesEntities.ProgramFeatures;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.StringJoiner;
 import java.util.concurrent.Callable;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class ExtractFeaturesTask implements Callable<Void> {
   private final CommandLineValues m_CommandLineValues;
-  private final String code;
+  public String code;
   private FeatureExtractor featureExtractor;
 
   public ExtractFeaturesTask(CommandLineValues commandLineValues, String code) {
@@ -26,6 +30,7 @@ class ExtractFeaturesTask implements Callable<Void> {
   public void process() {
     ArrayList<ProgramFeatures> features;
     try {
+      this.code = connectOrphanComments(code);
       features = extractSingleFile();
     } catch (IOException e) {
       e.printStackTrace();
@@ -48,5 +53,50 @@ class ExtractFeaturesTask implements Callable<Void> {
     }
 
     return featureExtractor.extractFeatures(code);
+  }
+
+  /**
+   * Iterate over the orphan comments in the code snippet and replace them with merged single line
+   * comments. The pattern can be decyphered as follows: <.*> - Match enything before the comment
+   * signs zero or more times (for whitespace). <\\/\\/.*> - Match the // sign of a single line
+   * comment. <(\n)*> - Match a newline character zero or more times. <(...){2,}> - there must be
+   * two or more of such occurences.
+   *
+   * @param original the original string
+   * @return a string with sequential comments combined into a single comment.
+   */
+  public String connectOrphanComments(String original) {
+    int lastIndex = 0;
+    StringBuilder output = new StringBuilder();
+    Pattern pattern = Pattern.compile("(.*\\/\\/.*(\n)*){2,}", Pattern.MULTILINE);
+    Matcher matcher = pattern.matcher(original);
+
+    while (matcher.find()) {
+      output
+          .append(original, lastIndex, matcher.start())
+          .append(concatinateComments(matcher.group(0)));
+
+      lastIndex = matcher.end();
+    }
+
+    if (lastIndex < original.length()) {
+      output.append(original, lastIndex, original.length());
+    }
+
+    return output.toString();
+  }
+
+  public String concatinateComments(String comments) {
+    StringJoiner sj = new StringJoiner(" ", "// ", "\n");
+    comments
+        .lines()
+        .filter(Predicate.not(String::isEmpty))
+        .forEach(
+            l -> {
+              sj.add(
+                  l.replaceAll(
+                      ".*//(\\s)*", "")); // remove comment signs with any whitespace before text
+            });
+    return sj.toString();
   }
 }

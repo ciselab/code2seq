@@ -87,7 +87,7 @@ public class FunctionVisitor extends VoidVisitorAdapter<Object> {
           && javadocCommentOptional.get().getContent().length() > 1) {
         comment = javadocCommentOptional.get().getContent();
         normalizedName = Common.normalizeName(comment, Common.BlankWord);
-        splitNameParts = Common.splitToSubtokens(normalizedName);
+        splitNameParts = Common.splitToSubtokens(comment);
       } else {
         return;
       }
