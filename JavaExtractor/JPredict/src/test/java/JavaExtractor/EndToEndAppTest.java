@@ -11,7 +11,7 @@ import org.kohsuke.args4j.CmdLineException;
  * Runs an example End-to-End test on the example .jsonl Important: The args cannot end with a
  * space! E.g. having "--file " instead of "--file" will result in errors.
  */
-public class EndToEndTest {
+public class EndToEndAppTest {
 
   @Tag("File")
   @Test
@@ -75,7 +75,16 @@ public class EndToEndTest {
   @Test
   void testApp_OnBadFile_ShouldThrowError() {
     String testFilePath = "src/test/resources/jsonls/jsonTest.jsonl";
-    String[] args = {"--file", testFilePath, "--max_path_length", "200", "--max_path_width", "10"};
+    String[] args = {
+      "--file",
+      testFilePath,
+      "--max_path_length",
+      "200",
+      "--max_path_width",
+      "10",
+      "--dataset",
+      "funcom"
+    };
 
     assertThrows(ParseProblemException.class, () -> App.main(args));
   }
