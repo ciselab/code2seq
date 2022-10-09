@@ -141,6 +141,23 @@ class ModelRunner:
             else:
                 print("Initializing model from scratch.")
 
+        if self.config.LOAD_PATH and not self.config.TRAIN_PATH:
+            model_dirname = self.config.LOAD_PATH
+        elif self.config.MODEL_PATH:
+            model_dirname = self.config.MODEL_PATH
+        else:
+            model_dirname = None
+            print('Model directory is missing')
+            exit(-1)
+
+        stats_file_name = os.path.join(model_dirname, "stats.txt")
+        loss_file_name = os.path.join(model_dirname, "avg_loss.txt")
+        try:
+            os.remove(stats_file_name)
+            os.remove(loss_file_name)
+        except OSError:
+            pass
+
         sum_loss = 0
         batch_num = 0
         epochs_trained = 0
@@ -194,7 +211,7 @@ class ModelRunner:
                 batch_num += 1
 
                 if batch_num % self.num_batches_to_log == 0:
-                    self.trace(pbar, sum_loss, batch_num, multi_batch_start_time)
+                    self.trace(pbar, sum_loss, batch_num, multi_batch_start_time, loss_file_name)
                     sum_loss = 0
                     multi_batch_start_time = time.time()
 
@@ -211,7 +228,12 @@ class ModelRunner:
                     checkpoint_manager.save()
 
             # validate model to calculate metrics or stop training
-            results, precision, recall, f1, rouge = self.evaluate()
+            results, precision, recall, f1, rouge = self.evaluate(model_dirname)
+
+            # Add results to a stats file for later processing of graphs
+            with open(stats_file_name, "a+") as stats_file:
+                stats_file.write("{0}, {1}, {2}, {3}, {4}\n".format(epochs_trained, results, precision, recall, f1))
+
             if self.config.BEAM_WIDTH == 0:
                 print("Accuracy after %d epochs: %.5f" % (epochs_trained, results))
             else:
@@ -252,7 +274,7 @@ class ModelRunner:
             % ((elapsed // 60 // 60), (elapsed // 60) % 60, elapsed % 60)
         )
 
-    def evaluate(self):
+    def evaluate(self, model_dirname):
         if not self.model:
             print("Model is not initialized")
             exit(-1)
@@ -260,14 +282,7 @@ class ModelRunner:
         print("Testing...")
         eval_start_time = time.time()
 
-        if self.config.LOAD_PATH and not self.config.TRAIN_PATH:
-            model_dirname = self.config.LOAD_PATH
-        elif self.config.MODEL_PATH:
-            model_dirname = self.config.MODEL_PATH
-        else:
-            model_dirname = None
-            print('Model directory is missing')
-            exit(-1)
+        
 
         ref_file_name = os.path.join(model_dirname, "ref.txt")
         predicted_file_name = os.path.join(model_dirname, "pred.txt")
@@ -388,7 +403,8 @@ class ModelRunner:
 
         elapsed = int(time.time() - eval_start_time)
         precision, recall, f1 = calculate_results(true_positive, false_positive, false_negative)
-        
+        accuracy = num_correct_predictions / total_predictions 
+
         try:
             files_rouge = FilesRouge(predicted_file_name, ref_file_name)
             rouge = files_rouge.get_scores(avg=True, ignore_empty=True)
@@ -396,7 +412,7 @@ class ModelRunner:
             rouge = 0
 
         print("Evaluation time: %sh%sm%ss" % ((elapsed // 60 // 60), (elapsed // 60) % 60, elapsed % 60))
-        return num_correct_predictions / total_predictions, precision, recall, f1, rouge
+        return accuracy, precision, recall, f1, rouge
 
     def print_hyperparams(self):
         print("Training batch size:\t\t\t", self.config.BATCH_SIZE)
@@ -422,17 +438,18 @@ class ModelRunner:
         print("LSTM dropout keep_prob:\t\t\t", self.config.RNN_DROPOUT_KEEP_PROB)
         print("============================================")
 
-    def trace(self, pbar, sum_loss, batch_num, multi_batch_start_time):
+    def trace(self, pbar, sum_loss, batch_num, multi_batch_start_time, loss_file_name):
         multi_batch_elapsed = time.time() - multi_batch_start_time
         avg_loss = sum_loss / self.num_batches_to_log
+        throughput = self.config.BATCH_SIZE * self.num_batches_to_log / (multi_batch_elapsed if multi_batch_elapsed > 0 else 1)
         msg = "Average loss at batch {0}: {1}, \tthroughput: {2} samples/sec".format(
             batch_num,
             avg_loss,
-            self.config.BATCH_SIZE
-            * self.num_batches_to_log
-            / (multi_batch_elapsed if multi_batch_elapsed > 0 else 1),
+            throughput
         )
         pbar.set_description(msg)
+        with open(loss_file_name, "a+") as loss_file:
+            loss_file.write("{0}, {1}, {2}\n".format(batch_num, avg_loss, throughput))
 
     def encode(self, predict_data_lines):
         if not self.model:
