@@ -211,7 +211,7 @@ class ModelRunner:
                 batch_num += 1
 
                 if batch_num % self.num_batches_to_log == 0:
-                    self.trace(pbar, sum_loss, batch_num, multi_batch_start_time, model_dirname, loss_file_name)
+                    self.trace(pbar, sum_loss, batch_num, multi_batch_start_time, loss_file_name)
                     sum_loss = 0
                     multi_batch_start_time = time.time()
 
@@ -438,7 +438,7 @@ class ModelRunner:
         print("LSTM dropout keep_prob:\t\t\t", self.config.RNN_DROPOUT_KEEP_PROB)
         print("============================================")
 
-    def trace(self, pbar, sum_loss, batch_num, multi_batch_start_time, model_dirname, loss_file_name):
+    def trace(self, pbar, sum_loss, batch_num, multi_batch_start_time, loss_file_name):
         multi_batch_elapsed = time.time() - multi_batch_start_time
         avg_loss = sum_loss / self.num_batches_to_log
         throughput = self.config.BATCH_SIZE * self.num_batches_to_log / (multi_batch_elapsed if multi_batch_elapsed > 0 else 1)
