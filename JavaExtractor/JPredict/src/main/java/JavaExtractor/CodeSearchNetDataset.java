@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 
 /**
  * This class covers the data-format for the Code Search Net dataset. More information on said
@@ -90,7 +91,7 @@ public class CodeSearchNetDataset implements Dataset {
    *
    * @param json json string read from a file.
    */
-  private String parseJson(String json) {
+  public String parseJson(String json) {
     JSONObject jo = new JSONObject(json);
 
     StringBuilder fullEntry = new StringBuilder();
@@ -103,13 +104,13 @@ public class CodeSearchNetDataset implements Dataset {
                 l ->
                     !l.contains("=")
                         && !l.contains("-")
-                        && !l.startsWith("<")
                         && !l.startsWith("(")
                         && !l.startsWith("@")
                         && l.split("[\\s+]").length >= 2)
             .findFirst()
             .orElse("");
 
+    summary = html2text(summary);
     javaDoc.append("* " + summary + "\n");
     javaDoc.append("*/\n");
 
@@ -117,5 +118,9 @@ public class CodeSearchNetDataset implements Dataset {
     fullEntry.append(jo.get("original_string") + "\n");
 
     return fullEntry.toString();
+  }
+
+  public static String html2text(String html) {
+    return Jsoup.parse(html).text();
   }
 }
