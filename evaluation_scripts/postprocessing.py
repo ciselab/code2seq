@@ -82,17 +82,3 @@ def run_statistical_tests():
     # print("Jaccard Cliff Delta:", cliffs_delta(com_jac, no_com_jac))
 
     pass
-
-def generate_graphs():
-
-    
-    
-    
-
-    # TODO: fix paths for stats files
-    # TODO: implement graphs from the statistics
-
-if __name__ == "__main__":
-    main()
-
-   

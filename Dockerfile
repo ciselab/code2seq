@@ -31,6 +31,7 @@ ENV includeComments=true
 ENV excludeStopwords=true
 ENV useTfidf=true
 ENV numberOfTfidfKeywords="50"
+ENV variant="default"
 
 # Training variables
 ENV train=true
