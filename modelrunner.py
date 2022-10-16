@@ -548,7 +548,7 @@ class ModelRunner:
         return results
 
     def save_model(self, path):
-        path_name = os.path.dirname(path)
+        path_name = self.config.SAVE_PATH
         if not os.path.exists(path_name):
             os.makedirs(path_name)
         checkpoint = tf.train.Checkpoint(model=self.model)
@@ -572,7 +572,7 @@ class ModelRunner:
             pickle.dump(self.config, file)
 
     def load_model(self, path):
-        path_name = os.path.dirname(path)
+        path_name = self.config.SAVE_PATH
         if os.path.exists(path_name):
             with open(os.path.join(path_name, "model.dict"), "rb") as file:
                 self.subtoken_to_index = pickle.load(file)
