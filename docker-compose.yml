@@ -13,7 +13,8 @@ services:
       - ./datasets/funcom/preprocessed:/app/code2seq/datasets/funcom/preprocessed:rw
       
     environment:
-      dataset: "funcom"
+      dataset: "codesearchnet"
+      variant: "comments"
     # Preprocessing variables
       preprocess: true
       includeComments: true
@@ -22,9 +23,8 @@ services:
       numberOfTfidfKeywords: "50"
     # Training variables
       train: true
+      # There has to ba an existing model for the following to work
       continueTrainingFromCheckpoint: false
-    # Evaluation variables
-    # add more flags here
 
     deploy:
       resources:

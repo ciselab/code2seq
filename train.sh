@@ -7,6 +7,7 @@
 #   on the final (held-out) test set, change 'val' to 'test'.
 
 dataset_name=default
+variant=default
 continue_training_from_checkpoint=true
 
 # This code block is used to get long two-dash arguments from the command line.
@@ -23,6 +24,7 @@ while getopts ab:c:-: OPT; do
   case "$OPT" in
     dataset )    dataset_name="$OPTARG" ;;
     continue_training_from_checkpoint )    continue_training_from_checkpoint="$OPTARG" ;;
+    variant ) variant="$OPTARG" ;;
     ??* )          die "Illegal option --$OPT" ;;  # bad long option
     ? )            exit 2 ;;  # bad short option (error reported via getopts)
   esac
@@ -32,8 +34,8 @@ shift $((OPTIND-1)) # remove parsed options and args from $@ list
 echo "Dataset: $dataset_name" 
 echo "Training from a previous checkpoint: $continue_training_from_checkpoint"
 
-type=trained_${dataset_name}
-data_dir=datasets/${dataset_name}/preprocessed
+type=exp_${dataset_name}_${variant}
+data_dir=datasets/${dataset_name}/preprocessed/exp_${variant}
 data=${data_dir}/${dataset_name}
 test_data=${data_dir}/${dataset_name}.val.c2s
 model_dir=models/${type}

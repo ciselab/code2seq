@@ -27,6 +27,7 @@ set -e
 
 # Default preprocessing values
 DATASET_NAME=default
+VARIANT=default
 INCLUDE_COMMENTS=true
 EXCLUDE_STOPWORDS=false
 USE_TFIDF=false
@@ -49,6 +50,7 @@ while getopts ab:c:-: OPT; do
     exclude_stopwords ) EXCLUDE_STOPWORDS="$OPTARG" ;;
     include_tfidf )  USE_TFIDF="$OPTARG" ;;
     number_keywords )  NUMBER_OF_TFIDF_KEYWORDS="$OPTARG" ;;
+    variant ) VARIANT="$OPTARG" ;;
     ??* )          die "Illegal option --$OPT" ;;  # bad long option
     ? )            exit 2 ;;  # bad short option (error reported via getopts)
   esac
@@ -56,6 +58,7 @@ done
 shift $((OPTIND-1)) # remove parsed options and args from $@ list
 
 echo "Dataset: $DATASET_NAME" 
+echo "Variant: $VARIANT"
 echo "Including comments: $INCLUDE_COMMENTS" 
 echo "Excluding stopwords: $EXCLUDE_STOPWORDS" 
 echo "Using TFIDF: $USE_TFIDF" 
@@ -76,9 +79,9 @@ NUM_THREADS=64
 PYTHON=python3
 ###########################################################
 
-OUTPUT_DIR=${INPUT_DIR}/${DATASET_NAME}/preprocessed
+OUTPUT_DIR=${INPUT_DIR}/${DATASET_NAME}/preprocessed/exp_${VARIANT}
 
-mkdir -p ${INPUT_DIR}/${DATASET_NAME}/preprocessed
+mkdir -p ${INPUT_DIR}/${DATASET_NAME}/preprocessed/exp_${VARIANT}
 
 TRAIN_DATA_FILE=${OUTPUT_DIR}/${DATASET_NAME}.train.raw.txt
 VAL_DATA_FILE=${OUTPUT_DIR}/${DATASET_NAME}.val.raw.txt
