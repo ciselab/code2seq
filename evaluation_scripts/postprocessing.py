@@ -4,6 +4,10 @@
 # import scipy.stats as stats
 # from cliffs_delta import cliffs_delta
 from glob import glob
+import os
+
+# Global variable to hold the data for each experiment
+experiment_data = []
 
 class ExperimentResult:
     """ Class to hold the output of a single experiment for easier managmenet """
@@ -13,38 +17,40 @@ class ExperimentResult:
         self.stats = stats
         self.loss = loss
  
-# Global variable to hold the data for each experiment
-experiment_data = []
-
 def main():
     """ Main program """
     # Load the data by creating an ExperimentResults object for each experiment
-    loadData()
+    load_data()
 
     # Process the gathered data.
-    # run_statistical_tests()
-    # generate_graphs()
+    run_statistical_tests()
+    generate_graphs()
 
     return 0
 
-def loadData():
+def load_data():
 
     for dir in glob("../models/exp_*/"):
-        references = open(dir + "ref.txt").readlines()
-        predictions = open(dir + "pred_com.txt").readlines()
+        # ref file are the labels
+        # log file is the generated prediction
+        references = open(dir + "ref.txt").readlines() if os.path.isfile(dir + "ref.txt") else []
+        predictions = open(dir + "pred.txt").readlines() if os.path.isfile(dir + "log.txt") else []
 
-        # the format of stats is (separated by space):
+        # the format of stats is (separated by whitespace):
         # epoch, accuracy, precision, recall, f1 
-        stats = open("stats.txt").readlines()
-        # the format of loss is:
-        # batch number, average loss, throughput
-        loss = open("loss.txt").readlines()
-        res = ExperimentResult(references, predictions, stats, loss)
+        stats = open(dir + "stats.txt").readlines() if os.path.isfile(dir + "stats.txt") else []
 
+        # the format of loss is (separated by whitespace):
+        # batch number, average loss, throughput
+        loss = open(dir + "loss.txt").readlines() if os.path.isfile(dir + "loss.txt") else []
+
+        res = ExperimentResult(references, predictions, stats, loss)
         experiment_data.append(res)
+    print("====== LOADED EXPERIMENT DATA ======")
 
 def run_statistical_tests():
 
+    # TODO: Implement methods for statistical tests 
     # TODO: For Leonhard: this is how I calculated statistics for my results. I leave it as a reference. - Balys.
 
     # for i, ref in enumerate(references):
@@ -82,3 +88,11 @@ def run_statistical_tests():
     # print("Jaccard Cliff Delta:", cliffs_delta(com_jac, no_com_jac))
 
     pass
+
+
+def generate_graphs():
+    # TODO: implement methods for plot generation
+    pass
+
+if __name__ == "__main__":
+    main()
