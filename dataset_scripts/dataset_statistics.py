@@ -2,7 +2,14 @@ import json
 import os
 from pathlib import Path
 
-DATASETS = ["codesearchnet", "default", "funcom"]
+# Will only work for codesearchnet for now.
+# For funcom json parsing is not neededself.
+# For default dataset this approach is not suitable as the data is just pure java files.
+DATASETS = [
+        "codesearchnet", 
+        # "default", 
+        # "funcom"
+        ]
 
 for ds in DATASETS:
 
