@@ -8,10 +8,8 @@ from args import read_args
 
 if __name__ == "__main__":
     physical_devices = tf.config.list_physical_devices("GPU")
-    if len(physical_devices):
-        tf.config.experimental.set_memory_growth(physical_devices[0], True)
-        # tf.config.set_visible_devices([], 'GPU')
-
+    for device in physical_devices:
+        tf.config.experimental.set_memory_growth(device, True)
     args = read_args()
 
     np.random.seed(args.seed)
